@@ -1,9 +1,8 @@
-function kadanes_algorithm(the_array)
-{
-    let max_overall = 0;
+function kadanes_algorithm(the_array) {
     let max_now = 0;
+    let max_overall = 0;
       
-    for (var i = 0; i < the_array.length; i++)
+    for (let i = 0; i < the_array.length; i++)
     {
         max_now = max_now + the_array[i];
         if (max_overall < max_now) {
@@ -17,5 +16,5 @@ function kadanes_algorithm(the_array)
     return max_overall
 }
   
-const to_be_analyzed = [4, 2, -1, 4, -8, -1, 2, 5, -7 , 4, -3, -2, -4, 5, 3, 6, -7, 8]
+const to_be_analyzed = [-3, 6, -2, 7, 1, -10, 8, -5, 4]
 console.log(kadanes_algorithm(to_be_analyzed))

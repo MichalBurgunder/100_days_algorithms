@@ -1,4 +1,4 @@
-rom os import system
+from os import system
 from sys import platform
 import numpy as np
 from math import pi

@@ -23,7 +23,7 @@ def qr_decomposition(matrix):
     return Q, R
 
 
-def qr_algorithm(A, max_iter=100):
+def qr_algorithm(A, max_iter=400):
     q = A.copy()# this is just the identity matrix
     r = A.copy() # ..
     
@@ -33,7 +33,7 @@ def qr_algorithm(A, max_iter=100):
 
     return np.diagonal(r)
 
-matrix = np.array([[12,-51,4], [6,167,-68], [-4,24,-41]], dtype=float)
+matrix = np.array([[2,-22,-49], [-8273,2,612], [4,-5,-2]], dtype=float)
 
 res = qr_algorithm(matrix)
 

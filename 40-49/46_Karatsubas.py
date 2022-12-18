@@ -27,7 +27,7 @@ def naive_multiplication(x, y):
     result = 0
     x_str = str(x)
     y_str = str(y)
-    # we go backwards, from most dignificant digit to least
+    # we go backwards, from most significant digit to least
     for i in range(len(x_str)-1, -1, -1):
         xi = int(x_str[i]) * 10**(len(x_str)-i-1)
 

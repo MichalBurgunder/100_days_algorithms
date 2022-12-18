@@ -1,4 +1,4 @@
-# Every layer of a nerual net contains functions for forward passing and backward passing. The "backward" function, is what is known as backpropagation. This function differs for every different layer of a neural net, hence why there are multiple backward functions in this file. 
+# Every layer of a neural net contains functions for forward passing and backward passing. The "backward" function, is what is known as backpropagation. This function differs for every different layer of a neural net, hence why there are multiple backward functions in this file. 
 
 # To be more specific, backward passes for every layer are computed in a step by step fashion, by going through the network backwards, computing the derivates of every step along the way. That is, for every layer, the derivative of the activation function in question (e.g. sigmoid, or tanh, in this case) is found, and a small part of it is used to train the neural net. The weights are then adjusted according to this rate, all the way until one arrives at the beginning. 
 

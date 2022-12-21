@@ -1,23 +1,65 @@
 struct Point
     x::Float64
     y::Float64
-
-    # w::Union(Int8
+    mass::Int64
 end
-
-
 
 mutable struct QuadTree
     squares::Dict{String, Union{QuadTree, Nothing}}
     point::Union{Point, Nothing}
 
-    width::Int8
-    height::Int8
+    width::Int64
+    height::Int64
 
-    v_start::Int8
-    h_start::Int8
+    v_start::Int64
+    h_start::Int64
+
 
 end
+
+squares = ["ul", "ur", "dl", "dr"]
+
+function barycenter(quad::QuadTree)
+    # println(quad.point)
+    if quad.point == nothing
+        return
+    end
+    top = [0, 0]
+    bot = 0
+    for i in 1:length(squares)
+        # println(quad.squares[squares[i]])
+        if quad.squares[squares[i]] != nothing
+            barycenter(quad.squares[squares[i]])
+
+            if quad.squares[squares[i]].point != nothing
+                position = [quad.squares[squares[i]].point.x, quad.squares[squares[i]].point.y]
+                println("in here")
+                println("------")
+                println(quad.squares[squares[i]].point.x)
+                println(quad.squares[squares[i]].point.y)
+                println(quad.squares[squares[i]].point.mass)
+                println("------")
+                top[1] += position[1] * quad.squares[squares[i]].point.mass
+                top[2] += position[2] * quad.squares[squares[i]].point.mass
+                bot += quad.squares[squares[i]].point.mass
+            end
+        end
+    end
+
+    if bot == 0
+        return quad.point
+    end
+
+    position = top / bot
+    # println("---")
+    # println(top)
+    # println(bot)
+    # println(position, bot)
+    # println("---")
+    quad.point = Point(position[1], position[2], bot)
+    return quad.point
+end
+
 
 function get_lr(quad::QuadTree, point::Point)
     if point.x < quad.width/2
@@ -37,8 +79,6 @@ end
 
 function insert(quad::QuadTree, point::Point)
     if quad.point == nothing
-        println(quad)
-        println(quad.point)
         quad.point = point
         return
     else
@@ -82,18 +122,19 @@ function insert(quad::QuadTree, point::Point)
     end
 end
 
+# function compute_barycenters(quad::QuadTree)
+    
+#     for i in length(squares)
+#         if 
+#     end
+# end
 insert(q::QuadTree) = insert(q)
+# barycenter(q::QuadTree) = barycenter(q)
 
 # ----------------------------------------------------
 width = 100
 height = 100
 
-# plane = Dict{String, Union{QuadTree, Nothing}}(
-#     "ul" => QuadTree(nothing, nothing, width/2, height/2, 0, 0),
-#     "ur" => QuadTree(nothing, nothing, width/2, height/2, width/2, 0),
-#     "dl" => QuadTree(nothing, nothing, width/2, height/2, 0, height/2),
-#     "dr" => QuadTree(nothing, nothing, width/2, height/2, width/2, height/2)
-# )
 plane = Dict{String, Union{QuadTree, Nothing}}(
     "ul" => nothing,
     "ur" => nothing,
@@ -102,10 +143,20 @@ plane = Dict{String, Union{QuadTree, Nothing}}(
 )
 quad = QuadTree(plane, nothing, height, width, 0, 0)
 
-# Create a new
-p = Point(33, 55)
-p2 = Point(33, 80)
+# Create a new points
+p = Point(20, 20, 20)
+p2 = Point(20, 80, 20)
 insert(quad, p)
 insert(quad, p2)
+
+# now let's calculate all barycenters
+barycenter(quad)
+
+println(quad.point.x)
+println(quad.point.y)
+println(quad.point.mass)
+# compute the forces acting on every single point, and create new points out of them
+
+# save as into a gif. Repeat
 
 # https://jheer.github.io/barnes-hut/

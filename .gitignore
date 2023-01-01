@@ -10,3 +10,10 @@
 .idea
 misc
 playground*
+*.png
+*.jpeg
+*.jpg
+*.class
+*.gif
+*.json
+*.rtf

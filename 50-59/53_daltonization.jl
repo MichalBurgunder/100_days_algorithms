@@ -4,7 +4,7 @@ rgb_to_lms = [
     0.02314268 0.12801221 0.93605194;
 ]
 
-rgb_to_lms = [
+lms2rgb = [
     2.85831110 -1.62870796 -0.02481870;
     -0.21043478  1.15841493  0.00320463;
     -0.04188950 -0.11815433  1.06888657;
@@ -28,29 +28,41 @@ tritanopia = [
     -0.15773032 1.19465634 0;
 ]
 
-struct color_deficiencies_struct 
-    protanopia::Matrix{float}
-    deuteranopia::Matrix{float}
-    tritanopia::Matrix{float}
-end
+# struct color_deficiencies_struct 
+#     protanopia::Matrix{float}
+#     deuteranopia::Matrix{float}
+#     tritanopia::Matrix{float}
+# end
 
 using Images, ColorVectorSpace, ColorTypes, Colors
 
-image = load("/Users/michal/Documents/100daysofalgorithms/50-59/friday_meme8_2.jpeg")
-# x_type = typeof(image)
-# println(x_type)
-new_image = Matrix{RGB}(undef,size(image, 1),size(image, 2))
-# new_image = zeros(, 3)
+image = load("/Users/michal/Documents/100daysofalgorithms/50-59/friday_meme8_1.jpeg")
 
-println("start...")
+new_image_p = Matrix{RGB}(undef,size(image, 1),size(image, 2)) # p
+new_image_d = Matrix{RGB}(undef,size(image, 1),size(image, 2)) # d
+new_image_t = Matrix{RGB}(undef,size(image, 1),size(image, 2)) # t
+
+
+function simulate(p, color_deficiency)
+    point = [p.r p.g p.b;]
+    point = point * transpose(rgb_to_lms)
+    simulated = point * transpose(color_deficiency)
+    rgb_point = simulated * transpose(lms2rgb)
+    fin = map(clamp01nan, rgb_point)
+    return RGB(fin[1], fin[2], fin[3])
+end
+
+
 for i in 1:size(image, 1)
     for j in 1:size(image, 2)
-        point = transpose([image[i, j].r*256 image[i, j].g*256 image[i, j].b*256;])
-        res = transpose(protanopia * point)
-        new_image[i, j] = RGB(res[1]/256, res[2]/256, res[3]/256)
+        new_image_p[i,j] = simulate(image[i, j], protanopia)
+        new_image_d[i,j] = simulate(image[i, j], deuteranopia)
+        new_image_t[i,j] = simulate(image[i, j], tritanopia)
     end
 end
-println("done!")
-save("new_image.png", new_image)
-# image
-# color_deficiencies = color_deficiencies_struct(protanopia, deuteranopia, tritanopia)
+
+println("done! Saving...")
+save("new_image_p.png", new_image_p)
+save("new_image_d.png", new_image_d)
+save("new_image_t.png", new_image_t)
+println("saved!")

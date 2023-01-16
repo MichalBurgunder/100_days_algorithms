@@ -1,1 +1,0 @@
-Kvalues = cumprod(1./abs(1 + 1j*2.^(-(0:23))))

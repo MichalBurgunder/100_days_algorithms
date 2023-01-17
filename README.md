@@ -1,5 +1,5 @@
 
-<div style="text-align:center">
+<div align="center">
   <img src="days_of_algorithm.png" alt="image" width=250>
 </div>
 

@@ -1,8 +1,8 @@
 
 function get_grayscale(image)
     # if it's already in Grayscale, then we can skip the transformation part
-    if isa(my_image[1, 1], Gray)
-        return my_image
+    if isa(image[1, 1], Gray)
+        return image
     end
 
     m, n = size(image)
@@ -23,7 +23,7 @@ function compute_otsu_criteria(image, threshold, final_image=false)
     m, n = size(image)
     thresholded_im = zeros(m, n)
 
-    thresholded_im[256*matrix .>= threshold] .= 1
+    thresholded_im[256*image .>= threshold] .= 1
 
     # if the final_image parameter is set, we can return the image
     if final_image
@@ -49,8 +49,8 @@ function compute_otsu_criteria(image, threshold, final_image=false)
     # do not pay heed to the variance across an images edge, because we will
     # simply need to compare our final value with the final values of other
     # thresholds, where the same bias is present. 
-    val_pixels_non_zero = matrix[thresholded_im .== 1]
-    val_pixels_zero = matrix[thresholded_im .== 0]
+    val_pixels_non_zero = image[thresholded_im .== 1]
+    val_pixels_zero = image[thresholded_im .== 0]
 
     # we multiply the variances with how much weight (i.e. how many pixels
     # belong to this class) they hold. The result summarizes the total "visual
@@ -64,25 +64,34 @@ end
 
 using Images, ColorVectorSpace, ColorTypes, Colors
 using Statistics
+using BenchmarkTools
 
-file_path = "/Users/michal/Documents/100daysofalgorithms"
-file_name = "colors.png"
-my_image = load("$file_path/$file_name")
-
-# we first convert the image into a grayscale image, if necessary
-matrix = get_grayscale(my_image)
-
-# now we compute all criteria, and take the minimum of those
-criteria = []
-for thr in 1:256
-    criterion = compute_otsu_criteria(my_image, thr)
-    push!(criteria, criterion)
+# --------------------------------------------------
+#                      START HERE
+# --------------------------------------------------
+function main()
+    file_path = "/Users/michal/Documents/100daysofalgorithms"
+    file_name = "sudoku.png"
+    my_image = load("$file_path/$file_name")
+    
+    # we first convert the image into a grayscale image, if necessary
+    matrix = get_grayscale(my_image)
+    
+    # now we compute all criteria, and take the minimum of those
+    criteria = []
+    for thr in 1:256
+        criterion = compute_otsu_criteria(matrix, thr)
+        push!(criteria, criterion)
+    end
+    
+    minimal_value = argmin(criteria)
+    final_image = compute_otsu_criteria(matrix, minimal_value, true)
+    
+    # save the image
+    print("Saving... ")
+    save("$file_path/otsued_$file_name", final_image)
+    println("Done!")
 end
 
-minimal_value = argmin(criteria)
-final_image = compute_otsu_criteria(my_image, minimal_value, true)
 
-# save the image
-print("Saving... ")
-save("$file_path/otsued_$file_name", final_image)
-println("Done!")
+@time main()

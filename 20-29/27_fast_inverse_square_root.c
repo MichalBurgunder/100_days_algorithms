@@ -2,7 +2,7 @@
 #include <math.h>
 
 // fast inverse square root, as specified by Wikipedia (https://en.wikipedia.org/wiki/Fast_inverse_square_root)
-// below is the actual implementation of the algorithm in production, including comments
+// below is the actual implementation of the algorithm found in production, comments including
 float Q_rsqrt( float number ) {
 	long i;
 	float x2, y;

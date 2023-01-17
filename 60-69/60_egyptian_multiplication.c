@@ -36,7 +36,6 @@ int main()
     int now = 1;
     int current_large = larger;
     while(1) {
-    printf("%u\n", current_large);
         while(1) {
             if(now > current_large) {
                 current_large = current_large - (now/2);

@@ -1,6 +1,10 @@
-# 100 Algorithms
 
-Introduction ...
+<div style="text-align:center">
+  <img src="days_of_algorithm.png" alt="image" width=250>
+</div>
+
+
+
 
 ## Getting Started
 

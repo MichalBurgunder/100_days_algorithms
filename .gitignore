@@ -17,3 +17,6 @@ playground*
 *.gif
 *.json
 *.rtf
+
+_archive/*
+Barnes-Hut-Simulation/*

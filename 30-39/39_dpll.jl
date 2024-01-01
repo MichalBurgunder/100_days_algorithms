@@ -23,7 +23,7 @@ function f5(a, b, c, d)
 end
 
 function f6(a, b, c, d)
-    return ~b | (c | d)
+    return ~b & (c | ~d)
 end
 
 

@@ -48,7 +48,7 @@ public class chat {
             if (j != threadId) {
                 // Wait until thread j is not choosing
                 while (choosing.get(j) != 0) {
-                    System.out.println("Thread " + j + " locking at 1");
+                    System.out.println("Thread " + j + " yielding at 1");
                     Thread.yield();
                 }
 

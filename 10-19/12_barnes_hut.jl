@@ -11,7 +11,7 @@ get_y(p) = p.y
 
 # will denote those trees that have not been initialized yet
 block_point = Point(-1,-1,-1)
-G = 6.674*10^(0) # gravitational constant
+G = 6.674*10^(-1) # gravitational constant
 
 
 mutable struct QuadTree
@@ -36,7 +36,12 @@ plane_base = Dict{String, Union{QuadTree, Nothing}}(
 
 squares = ["ul", "ur", "dl", "dr"]
 
-function barycenter(quad::QuadTree)
+function barycenter(quad::Union{QuadTree, Nothing})
+    # when a quad tree has not even been intizialized
+    if isnothing(quad)
+        return nothing
+    end
+
     # this is when a quad tree has not been used
     if isnothing(quad.point)
         return true
@@ -45,15 +50,16 @@ function barycenter(quad::QuadTree)
     top = float.([0, 0])
     bot = 0
     for i in eachindex(squares)
-        if !isnothing(quad.squares[squares[i]]) # not nothing
-            barycenter(quad.squares[squares[i]])
+        if isnothing(quad.squares[squares[i]])
+            continue
+        end
 
-            if quad.squares[squares[i]].point != nothing
-                position = [quad.squares[squares[i]].point.x, quad.squares[squares[i]].point.y]
-                top[1] += position[1] * quad.squares[squares[i]].point.mass
-                top[2] += position[2] * quad.squares[squares[i]].point.mass
-                bot += quad.squares[squares[i]].point.mass
-            end
+        barycenter(quad.squares[squares[i]])
+        if !isnothing(quad.squares[squares[i]].barycenter)
+            position = [quad.squares[squares[i]].barycenter.x, quad.squares[squares[i]].barycenter.y]
+            top[1] += position[1] * quad.squares[squares[i]].barycenter.mass
+            top[2] += position[2] * quad.squares[squares[i]].barycenter.mass
+            bot += quad.squares[squares[i]].barycenter.mass
         end
     end
 
@@ -163,6 +169,7 @@ function compute_forces(points::Array{Point}, quadTree::QuadTree, threshold::Flo
 
     for p in 1:length(points)
         sum_forces = [0.0, 0.0]
+
         for i in eachindex(squares)
             # we make sure that the quad tree has been initialized
             if isnothing(quadTree.squares[squares[i]])
@@ -203,10 +210,18 @@ function simulate_movement(points, forces)
     return new_points
 end
 
+function add_forces(forces, new_forces)
+    for i in eachindex(forces)
+        # println(forces[i])
+        # println(new_forces[i])
+        forces[i] += new_forces[i]
+    end
+    return forces
+end
 # ----------------------------------------------------
 size = 100
 
-number_of_simulation_iterations = 100
+number_of_simulation_iterations = 30
 width = size
 height = size
 theta = size/2
@@ -228,11 +243,13 @@ p4 = Point(40, 10, 20)
 
 temp_quad_tree = nothing
 temp_points = [p1, p2, p3, p4]
+temp_forces = [[0.0, 0.0] for i in eachindex(temp_points)]
 points_of_points = []
 
 for i in eachindex(1:number_of_simulation_iterations)
     global temp_points
     global temp_quad_tree
+    global temp_forces
     # println(plane_base)
     # exit()
     println("iteration: $i")
@@ -253,20 +270,24 @@ for i in eachindex(1:number_of_simulation_iterations)
     # println("2")
     # compute the forces acting on every single point, and create new points out of them
     forces = compute_forces(temp_points, temp_quad_tree, theta)
+
+    temp_forces .+= forces 
     # println("3")
     # WE ARE HERE
     # we apply the forces on our points, so we get a new set of points
-    temp_points = simulate_movement(temp_points, forces)
+    temp_points = simulate_movement(temp_points, temp_forces)
     # println("4")
     push!(points_of_points, (map(get_x, temp_points), map(get_y, temp_points)))
     # println("at end of loop")
+    # println(i)
 end
 
 println("made it")
 
 anim = @animate for i = 1:number_of_simulation_iterations
+    # println(points_of_points)
     scatter(points_of_points[i][1], points_of_points[i][2], legend=false, )
-    xlims!(0, 100)  # Set the x-axis limits from 0 to 1
+    xlims!(0, 100)
     ylims!(0, 100)
 end
 

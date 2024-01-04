@@ -1,12 +1,17 @@
+using Plots
+
 struct Point
     x::Float64
     y::Float64
     mass::Float64
 end
 
+get_x(p) = p.x
+get_y(p) = p.y
+
 # will denote those trees that have not been initialized yet
 block_point = Point(-1,-1,-1)
-G = 6.674*10^(-11) # gravitational constant
+G = 6.674*10^(-1) # gravitational constant
 
 
 mutable struct QuadTree
@@ -26,9 +31,9 @@ function barycenter(quad::QuadTree)
     if quad.point == nothing
         return true
     end
-    top = [0, 0]
+    top = float.([0, 0])
     bot = 0
-    for i in 1:length(squares)
+    for i in eachindex(squares)
         if quad.squares[squares[i]] != nothing
             barycenter(quad.squares[squares[i]])
 
@@ -91,6 +96,7 @@ end
 l = 0
 function insert(quad::QuadTree, point::Point)
     # very first point
+    # println("in insert")
     if quad.point == nothing
         quad.point = point
         return true
@@ -100,13 +106,13 @@ function insert(quad::QuadTree, point::Point)
     lr_p = get_lr(quad, quad.point)
 
     if quad.point.mass != -1
-        println("quad.point")
-        println(quad.point)
+        # println("quad.point")
+        # println(quad.point)
         if quad.squares[ud_p*lr_p] == nothing
-            println("setting new tree")
+            # println("setting new tree")
             set_new_quad_tree(quad, quad.point, ud_p, lr_p)
         else
-            println("here")
+            # println("here")
             insert(quad.squares[ud_p*lr_p], quad.point)
         end
     end
@@ -117,7 +123,7 @@ function insert(quad::QuadTree, point::Point)
     if quad.squares[ud*lr] == nothing
         set_new_quad_tree(quad, point, ud, lr)
     else
-        println("there")
+        # println("there")
         insert(quad.squares[ud*lr], point)
     end
 
@@ -172,23 +178,30 @@ function compute_forces(points::Array{Point}, quadTree::QuadTree, threshold::Flo
 end
 
 function simulate_movement(points, forces)
-    return
+    new_points = Point[]
+    for i in eachindex(points)
+        new_point = Point(points[i].x + forces[i][1], points[i].y + forces[i][2], points[i].mass)
+        push!(new_points, new_point)
+    end
+    return new_points
 end
 
 # ----------------------------------------------------
 size = 100
 
+number_of_simulation_iterations = 14
 width = size
 height = size
 theta = size/2
 
-plane = Dict{String, Union{QuadTree, Nothing}}(
+plane_base = Dict{String, Union{QuadTree, Nothing}}(
     "ul" => nothing,
     "ur" => nothing,
     "dl" => nothing,
     "dr" => nothing
 )
 
+plane = copy(plane_base)
 
 quad = QuadTree(plane, nothing, width, height, 0, 0)
 
@@ -201,29 +214,65 @@ p4 = Point(40, 10, 20)
 
 points = [p1, p2, p3, p4]
 
-println("p1")
-insert(quad, p1)
-println("p2")
-insert(quad, p2)
-insert(quad, p3)
-insert(quad, p4)
-println("--------------------")
+# println("p1")
+# insert(quad, p1)
+# println("p2")
+# insert(quad, p2)
+# insert(quad, p3)
+# insert(quad, p4)
+# println("--------------------")
 # # println(quad.squares["ul"])
 # exit()
 
 # println("p3")
 # insert(quad, p3)
 
-# now let's calculate all barycenters
-res = barycenter(quad)
+temp_quad_tree = nothing
+temp_points = points
+points_of_points = []
 
-# compute the forces acting on every single point, and create new points out of them
-forces = compute_forces(points, quad, theta)
+for i in eachindex(1:number_of_simulation_iterations)
+    global temp_points
+    global temp_quad_tree
+    # println(temp_points)
+    # exit()
+    # println("iteration: $i")
+    temp_quad_tree = QuadTree(copy(plane_base), nothing, width, height, 0, 0)
+    # println("1")
+    println(length(temp_points))
+    for j in eachindex(temp_points)
+        # println("1$j")
+        # println(temp_points[j])
+        insert(temp_quad_tree, temp_points[j])
+    end
+    # gif(anim, "tutorial_anim_fps30.gif", fps = 30)
+    # now let's calculate all barycenters
+    res = barycenter(temp_quad_tree)
+    # println("2")
+    # compute the forces acting on every single point, and create new points out of them
+    forces = compute_forces(temp_points, temp_quad_tree, theta)
+    # println("3")
+    # WE ARE HERE
+    # we apply the forces on our points, so we get a new set of points
+    temp_points = simulate_movement(temp_points, forces)
+    # println("4")
+    push!(points_of_points, (map(get_x, temp_points), map(get_y, temp_points)))
+    # println("at end of loop")
+end
 
-# WE ARE HERE
-# we apply the forces on our points, so we get a new set of points
-new_points = simulate_movement(points, forces)
+println("made it")
 
+anim = @animate for i = 1:number_of_simulation_iterations
+    scatter(points_of_points[i][1], points_of_points[i][2], legend=false, )
+    xlims!(0, 100)  # Set the x-axis limits from 0 to 1
+    ylims!(0, 100)
+end
+
+gif(anim, "barnes_hut_1.gif", fps = 30)
+
+# for i in 1:eachindex(new_points)
+#     insert(new_quad_tree, new_points[i])
+# println(forces)
 # save as into a gif. Repeat
 
 # https://jheer.github.io/barnes-hut/

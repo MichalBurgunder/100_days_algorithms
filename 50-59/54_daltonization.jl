@@ -62,9 +62,9 @@ end
 
 # performs color correction on images so that dichromats can see betters
 function daltonize(image)
-    new_image_p = Matrix{RGB}(undef,size(my_image, 1),size(my_image, 2)) # final protanopia image
-    new_image_d = Matrix{RGB}(undef,size(my_image, 1),size(my_image, 2)) # final deuteranopia image
-    new_image_t = Matrix{RGB}(undef,size(my_image, 1),size(my_image, 2)) # final tritanopia image
+    new_image_p = Matrix{RGB}(undef, size(my_image, 1), size(my_image, 2)) # final protanopia image
+    new_image_d = Matrix{RGB}(undef, size(my_image, 1), size(my_image, 2)) # final deuteranopia image
+    new_image_t = Matrix{RGB}(undef, size(my_image, 1), size(my_image, 2)) # final tritanopia image
 
     # we first simulate what dichromats can see
     for i in 1:size(image, 1)

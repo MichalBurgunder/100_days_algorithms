@@ -16,7 +16,8 @@ function save_image(maze)
     image_name_modifier += 1
     the_time = Millisecond(now()).value
     push!(times, the_time)
-    save("$to_images/$file_name\_$the_time.png", maze)
+    println("saving...")
+    save("$to_images/$file_name-$the_time.png", maze)
 end
 
 function where_empty(maze, i, j)
@@ -44,7 +45,7 @@ function fill_dead_end(maze, i, j, val=RGB(1,1,1))
         # we first save an image of the maze so far
         return fill_dead_end(maze, i, j, val)
     else    
-        [i, j] = next_empty_field
+        i, j = next_empty_field
         return fill_dead_end(maze, i, j, val)
     end
     
@@ -67,7 +68,8 @@ end
 # 
 function fill_all_dead_ends(maze, coordinates)
     for coordinate in coordinates
-        fill_dead_end(maze, coordinate, val=RGB=(1,0,0))
+        i, j = coordinate
+        fill_dead_end(maze, i, j, RGB(1,0,0))
     end
 end
 
@@ -75,6 +77,7 @@ function dead_end_filling(maze)
     # we will save our images in a folder. This creates this folder
     if isdir(path)
         mkdir(path)
+    end
     # we define the parameters of our maze, for easier processing
     m, n = size(maze)
 
@@ -112,20 +115,13 @@ function dead_end_filling(maze)
     return gif_creation()
 end
 
-function create_gif()
-    times = sort(times)
-    for i in eachindex(times)
-
-    end
-end
-
 function gif_creation()
     images = []
     sorted_times = sort(times)
 
     for i in eachindex(sorted_times)
-        push!(images, load("$to_images/$file_name\_$i.png"))
-        rm(the_images; recursive=true)
+        push!(images, load("$to_images/$file_name-$sorted_times[$i].png"))
+        # rm(the_images; recursive=true)
     end
 
     @time FileIO.save("$the_path/dead_end_filling.gif", images, fps = 5)
@@ -147,4 +143,5 @@ maze = [
     1 1 1 1 0 0 1 1 1 1 1 0;
     1 1 1 1 1 1 1 1 1 1 1 0;
 ]
-println(size(maze))
+
+# dead_end_filling()

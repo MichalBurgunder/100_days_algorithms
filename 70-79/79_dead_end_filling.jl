@@ -1,59 +1,150 @@
 
+using Pkg
+# Pkg.add("Images")
+# Pkg.add("Colors")
 using Images, Colors
 
 neighbor_translation = [1 => [-1, 0], 2 => [0, 1], 3 => [1, 0], 4 => [0, -1], ]
 
-image_name_modifier = 0
-file_path = "/Users/michal/Documents/100daysofalgorithms/images_79"
-file_name = "maze_solution_$image_name_modifier.png"
+the_path = "/Users/michal/Documents/100daysofalgorithms/70-79"
+to_images = "/Users/michal/Documents/100daysofalgorithms/70-79"
 
+file_name = "maze_solution"
+
+times = []
 function save_image(maze)
     image_name_modifier += 1
-    save("$file_path/$file_name", maze)
+    the_time = Millisecond(now()).value
+    push!(times, the_time)
+    save("$to_images/$file_name\_$the_time.png", maze)
 end
 
-function fill_dead_end(maze, point, next=[0, 0], val=1)
-    maze[point[1], point[2]] = val
-    next_point = point .+ neighbor_translation[next]
-    val = fetch_next_tile(maze[next_point[1], next_point[2]])
-    if val != 0
-        # dead end, so we fill
+function where_empty(maze, i, j)
+    for next in 1:4
+        q_empty = [i, j] .+ neighbor_translation[next]
+        if maze[q_empty] == 0
+            return  q_empty
+        end
+        return false
+    end
+end
+
+function fill_dead_end(maze, i, j, val=RGB(1,1,1))
+    # in order to get a visualization of how the algorithm fills out our maze,
+    # we save an image of the current maze
+    save_image(maze)
+
+    maze[i, j] = val
+    next_empty_field = where_empty(maze, i, j)
+    
+
+
+    if next_empty_field == false
+        # there are no more fields to fill
         # we first save an image of the maze so far
-        save_image(maze)
-        return fill_dead_end(maze, [i, j], val)
+        return fill_dead_end(maze, i, j, val)
+    else    
+        [i, j] = next_empty_field
+        return fill_dead_end(maze, i, j, val)
     end
     
     # if it's not a dead end, then we are done for this path
 end
 
-function fetch_next_tile(maze, point) 
+# checks if this tile is a dead end
+function is_dead_end(maze, i, j) 
     neighbors = [maze[i-1, j], maze[i, j+1],  maze[i+1, j],  maze[i, j-1]]
-    empty_fields = count(i-> (i == 0), neighbors)
-    if empty_fields != 1
-        return 0
+    wall_fields = count(i -> (i == 1), neighbors)
+
+    if wall_fields >= 3 # for those maze points that are surrounded by 3+ walls
+        return true
     end
 
     # we know that the number of zeros is 1, so we can find it with a simple argmin
-    return argmin(neighbors)
+    return false
 end
 
-function dead_end_filling(maze, endpoints)
+# 
+function fill_all_dead_ends(maze, coordinates)
+    for coordinate in coordinates
+        fill_dead_end(maze, coordinate, val=RGB=(1,0,0))
+    end
+end
+
+function dead_end_filling(maze)
+    # we will save our images in a folder. This creates this folder
+    if isdir(path)
+        mkdir(path)
+    # we define the parameters of our maze, for easier processing
     m, n = size(maze)
 
-    for i in 1:m:
-        for j in 1:n:
-            # including all those fields that are empty spaces
+    # here we save all dead ends that we will need to fill
+    dead_ends = []
+
+    for i in 1:m
+        for j in 1:n
+            # we only include those fields that are empty spaces and not walls
             if maze[i, j] == 0
-                # we fetch his neighbors
-                val = fetch_next_tile(maze[point[1], point[2]])
-                if val != 0
-                    # dead end. We fill
-                    fill_dead_end(maze, [i, j], val)
+
+                # if its an emoty space, we check its neighbors
+                # dead ends will always have 3 walls, 4 walls if it isolated
+                dead_end = is_dead_end(maze, i, j)
+
+                # we place them in an intermediary array above. Technically, we
+                # could start right away, although doing it this way makes it
+                # clear what is happening.
+                if dead_end == true
+                    push!(dead_ends, [i, j])
                 end
             end
         end
     end
     
-    # Now we simply fill in the remaining path
-    return fill_dead_end(maze, endpoints[1], val=RGB(1,0,0))
+    # with this, we can parallelize the dead end filling, and so, get a maze
+    # that is only left with the solution
+    fill_all_dead_ends(maze, dead_ends)
+
+    # though the path is now visually clear, we color it green for even more
+    # clarity, and save it
+    fill_dead_ends(maze, [[1,1]], val=RGB(0,0,1))
+
+    
+    return gif_creation()
 end
+
+function create_gif()
+    times = sort(times)
+    for i in eachindex(times)
+
+    end
+end
+
+function gif_creation()
+    images = []
+    sorted_times = sort(times)
+
+    for i in eachindex(sorted_times)
+        push!(images, load("$to_images/$file_name\_$i.png"))
+        rm(the_images; recursive=true)
+    end
+
+    @time FileIO.save("$the_path/dead_end_filling.gif", images, fps = 5)
+end
+
+
+
+maze = [
+    0 1 1 1 1 1 1 1 1 1 1 1;
+    0 1 0 0 0 0 0 0 0 1 0 1;
+    0 1 0 1 1 1 0 1 1 1 0 1;
+    0 0 0 1 0 1 0 1 0 0 0 1;
+    1 1 0 1 0 1 0 1 0 1 0 1;
+    0 0 0 1 0 0 0 1 0 1 0 1;
+    0 1 1 0 1 1 1 1 0 1 1 1;
+    0 0 1 0 0 0 0 0 0 0 0 1;
+    0 1 1 0 1 0 1 1 0 1 0 1;
+    0 0 0 0 1 0 1 0 0 1 0 0;
+    1 1 1 1 0 0 1 1 1 1 1 0;
+    1 1 1 1 1 1 1 1 1 1 1 0;
+]
+println(size(maze))

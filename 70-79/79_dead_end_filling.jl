@@ -44,16 +44,14 @@ function resize(maze, new_size)
     return new_maze
 end
 
-i = -1
+i = 0
 function save_image(maze, rgb_val)
-    # the_time = Millisecond(now()).value
-    # push!(times, the_time)
     global i
     save_maze = resize(maze, 10)
     save_maze = map(clamp01, save_maze)
     name = lpad(i, 4, "0")
     i += 1
-    # println("saving image $i")
+
     save("$to_images/$name.png", save_maze)
 end
 
@@ -77,24 +75,12 @@ end
 # function add_ton
 function where_next_empty(maze, i, j)
     new_neighbors = map(neighbor -> neighbor .+ [i, j], neighbor_translation)
-    # println(new_neighbors)
-    # exit()
+
     for next in 1:4
-        # println("next")
-        # println(next)
-        # println(is_valid_neighbor(new_neighbors[next], maze))
-        # if is_valid_neighbor(new_neighbors[next], maze)
-        #     println(maze[new_neighbors[next][1], new_neighbors[next][2]])
-        #     println(is_empty(maze[new_neighbors[next][1], new_neighbors[next][2]]))
-        #     println(is_dead_end(maze, new_neighbors[next][1], new_neighbors[next][2]))
-        # end
-      
-    #    println("---------")
         if is_valid_neighbor(new_neighbors[next], maze) &&
             is_empty(maze[new_neighbors[next][1], new_neighbors[next][2]])  && 
             is_dead_end(maze, new_neighbors[next][1], new_neighbors[next][2])
-            # println("in here")
-            # println(new_neighbors[next])
+
             return new_neighbors[next]
         end
     end
@@ -102,12 +88,11 @@ function where_next_empty(maze, i, j)
 end
 
 function fill_dead_end(maze, i, j, val=RGB(1,1,1))
-
     maze[i, j] = val
     save_image(maze, val)
-    # print("Arriving here or no?")
+
     next_empty_field = where_next_empty(maze, i, j)
-    # println("next_empty_field: $next_empty_field")
+
     if next_empty_field == false
         # there are no more fields to fill
         # we first save an image of the maze so far
@@ -140,8 +125,6 @@ function get_valid_neighbors(maze, i, j)
         push!(neighbors, [i+1, j]) 
     end
 
-    # println("is valid")
-    # println(is_valid_neighbor([i, j+1], maze))
     if is_valid_neighbor([i, j+1], maze) && is_empty(maze[i, j+1])
         push!(neighbors, [i, j+1]) 
     end
@@ -201,7 +184,6 @@ function dead_end_filling(maze)
         end
     end
     
-    println("filling dead ends")
     # with this, we can parallelize the dead end filling, and so, get a maze
     # that is only left with the solution
     fill_all_dead_ends(maze, dead_ends)
@@ -226,10 +208,9 @@ function gif_creation()
         push!(images, final_image)
     end
 
-    println("attempt ffmpeg")
     imagesdirectory = "/Users/michal/Documents/100daysofalgorithms/70-79/images"
-    framerate = 30
-    gifname = "/Users/michal/Documents/100daysofalgorithms/70-79/images/your-animation-name-final.gif"
+    framerate = 100
+    gifname = "/Users/michal/Documents/100daysofalgorithms/70-79/dead_end_filling.gif"
     FFMPEG.ffmpeg_exe(`-framerate $(framerate) -f image2 -i $(imagesdirectory)/%04d.png -y $(gifname)`)
 
 end

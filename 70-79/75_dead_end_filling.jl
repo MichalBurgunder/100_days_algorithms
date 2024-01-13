@@ -183,6 +183,7 @@ function dead_end_filling(maze)
             end
         end
     end
+
     
     # with this, we can parallelize the dead end filling, and so, get a maze
     # that is only left with the solution

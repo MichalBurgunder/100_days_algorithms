@@ -1,8 +1,9 @@
 
 using Pkg
 # Pkg.add("Images")
-# Pkg.add("QuartzImageIO")
-using Images, Colors, Dates, Images, FileIO, QuartzImageIO, Images, FFMPEG
+# Pkg.add("Colors")
+# Pkg.add("FFMPEG")
+using Images, Colors, FFMPEG
 
 neighbor_translation = [1 => [-1, 0], 2 => [0, 1], 3 => [1, 0], 4 => [0, -1], ]
 neighbor_translation = [[-1, 0],  [0, 1], [1, 0], [0, -1]]
@@ -45,7 +46,7 @@ function resize(maze, new_size)
 end
 
 i = 0
-function save_image(maze, rgb_val)
+function save_image(maze)
     global i
     save_maze = resize(maze, 10)
     save_maze = map(clamp01, save_maze)
@@ -56,12 +57,11 @@ function save_image(maze, rgb_val)
 end
 
 function is_empty(field)
+    # given that every field in our maze is some color, we check if these color
+    # values are all 0, which corresponds to white
     return field.r == 0 && field.g == 0 && field.b == 0
 end
 
-# function is_not_wall(field)
-#     return field.r == 0 && field.g == 0 && field.b = 0
-# end
 
 function is_valid_neighbor(pos, maze)
     try
@@ -72,14 +72,15 @@ function is_valid_neighbor(pos, maze)
     end
 end
 
-# function add_ton
+# we check where the next empty field is. This is used in the fill_dead_end
+# function. If there isn't one, it returns false
 function where_next_empty(maze, i, j)
     new_neighbors = map(neighbor -> neighbor .+ [i, j], neighbor_translation)
 
     for next in 1:4
-        if is_valid_neighbor(new_neighbors[next], maze) &&
-            is_empty(maze[new_neighbors[next][1], new_neighbors[next][2]])  && 
-            is_dead_end(maze, new_neighbors[next][1], new_neighbors[next][2])
+        if is_valid_neighbor(new_neighbors[next], maze) && # is not outside of maze
+            is_empty(maze[new_neighbors[next][1], new_neighbors[next][2]]) && # the field is empty
+            is_dead_end(maze, new_neighbors[next][1], new_neighbors[next][2]) # the next field only has one other place to go
 
             return new_neighbors[next]
         end
@@ -88,46 +89,36 @@ function where_next_empty(maze, i, j)
 end
 
 function fill_dead_end(maze, i, j, val=RGB(1,1,1))
+    # first we mark the field the color we have specified, and save the image.
+    # We will construct our gif from it afterwards
     maze[i, j] = val
-    save_image(maze, val)
+    save_image(maze)
 
     next_empty_field = where_next_empty(maze, i, j)
 
+    # we check if there are no more fields to fill
+    # otherwise, we fill in the next dead end recursively
     if next_empty_field == false
-        # there are no more fields to fill
-        # we first save an image of the maze so far
         return 0
-        # return save_image(maze, val)
     else    
-        # in order to get a visualization of how the algorithm fills out our maze,
-        # we save an image of the current maze
-        # save_image(maze, val)
-
         i, j = next_empty_field
         return fill_dead_end(maze, i, j, val)
     end
-    
-    # if it's not a dead end, then we are done for this path
 end
 
 function get_valid_neighbors(maze, i, j)
     neighbors = []
-
-    if is_valid_neighbor([i-1, j], maze) && is_empty(maze[i-1, j])
-        push!(neighbors, [i-1, j])
+    # we translate our incoming coordinates using the neighborhood translations
+    # to get the neighbors: [[-1, 0],  [0, 1], [1, 0], [0, -1]]
+    # these we check for validity and emptyless, for further processing
+    # downstream
+    for n in eachindex(neighbor_translation)
+        new_field = [i, j] .+ neighbor_translation[n]
+        if is_valid_neighbor(new_field, maze) && is_empty(maze[new_field[1], new_field[2]])
+            push!(neighbors, new_field)
+        end
     end
 
-    if is_valid_neighbor([i, j-1], maze) && is_empty(maze[i, j-1])
-        push!(neighbors, [i, j-1]) 
-    end
-
-    if is_valid_neighbor([i+1, j], maze) && is_empty(maze[i+1, j])
-        push!(neighbors, [i+1, j]) 
-    end
-
-    if is_valid_neighbor([i, j+1], maze) && is_empty(maze[i, j+1])
-        push!(neighbors, [i, j+1]) 
-    end
     return neighbors
 end
 
@@ -146,7 +137,8 @@ function is_dead_end(maze, i, j)
     return false
 end
 
-# 
+# this is the upper function of filling dead ends. fill_dead_end() is where
+# the magic happens
 function fill_all_dead_ends(maze, coordinates)
     for coordinate in coordinates
         i, j = coordinate
@@ -191,12 +183,13 @@ function dead_end_filling(maze)
 
     # though the path is now visually clear, we color it green for even more
     # clarity, and save it
-    fill_dead_end(maze, 1, 1, RGB(0,0,1))
+    fill_dead_end(maze, 1, 1, RGB(0,1,0))
 
     
     return gif_creation()
 end
 
+# this is just the gif creation process. Don't worry about it.
 function gif_creation()
     images = []
     sorted_times = sort(times)
@@ -209,16 +202,19 @@ function gif_creation()
         push!(images, final_image)
     end
 
-    imagesdirectory = "/Users/michal/Documents/100daysofalgorithms/70-79/images"
+    images_directory = "/Users/michal/Documents/100daysofalgorithms/70-79/images"
     framerate = 100
     gifname = "/Users/michal/Documents/100daysofalgorithms/70-79/dead_end_filling.gif"
-    FFMPEG.ffmpeg_exe(`-framerate $(framerate) -f image2 -i $(imagesdirectory)/%04d.png -y $(gifname)`)
+    FFMPEG.ffmpeg_exe(`-framerate $(framerate) -f image2 -i $(images_directory)/%04d.png -y $(gifname)`)
 
+    # we remove the images, as we now have our gif
+    rm(images_directory, recursive=true)
 end
 
 
 
-
+# in essence, we can replace this bitmap with any maze we want.
+# This is just a toy example
 maze = [
     0 1 1 1 1 1 1 1 1 1 1 1;
     0 1 0 0 0 0 0 0 0 1 0 1;

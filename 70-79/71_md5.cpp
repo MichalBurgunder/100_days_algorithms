@@ -1,8 +1,13 @@
 
 #include <cmath>
+#include <vector>
+#include <string>
+#include <iostream>
+#include <math>
+using namespace std;
 
-int main() {
-    // All variables are unsigned 32 bit and wrap modulo 2^32 when calculating
+int hash_me_baby_md5(std::vector<char> the_string) {
+ // All variables are unsigned 32 bit and wrap modulo 2^32 when calculating
     int K[64];
     int i;
 
@@ -47,20 +52,36 @@ int main() {
     int c0 = 0x98badcfe;   // C
     int d0 = 0x10325476;   // D
 
+    std::vector<uint8_t> message;
+    
     // Pre-processing: adding a single 1 bit
-    append "1" bit to message<    
+    // append "1" bit to message<    
+    message.insert(message.end(), 1);
+
+    for (int i = 0; i < 7; i++) {
+        message.insert(message.end(), 0);
+    }
+
      // Notice: the input bytes are considered as bit strings,
      //  where the first bit is the most significant bit of the byte.[53]
-
-    // Pre-processing: padding with zeros
-    append "0" bit until message length in bits ≡ 448 (mod 512)
 
     // Notice: the two padding steps above are implemented in a simpler way
      //  in implementations that only work with complete bytes: append 0x80
      //  and pad with 0x00 bytes so that the message length in bytes ≡ 56 (mod 64).
 
+    // Pre-processing: padding with zeros
+    for (int i = 0; i < 54; i++) {
+        for (int j = 0; j < 8; j++) {
+            message.insert(message.end(), 0);
+        }
+    }
+
+    // append "0" bit until message length in bits ≡ 448 (mod 512)
+    int length_of_message = the_string.size() % (int)pow(2, 64)
     append original length in bits mod 264 to message
 
+    // STOPPED HERE
+    message.insert()
     // Process the message in successive 512-bit chunks:
     for each 512-bit chunk of padded message do
         break chunk into sixteen 32-bit words M[j], 0 ≤ j ≤ 15
@@ -99,4 +120,14 @@ int main() {
     end for
 
     var char digest[16] := a0 append b0 append c0 append d0 // (Output is in little-endian)
+}
+
+int main() {
+    std::string to_hash = "Hello World!";
+ 
+    std::vector<char> vectorified;
+    std::copy(to_hash.begin(), to_hash.end(), std::back_inserter(vectorified));
+
+    hash_me_baby_md5(vectorified);
+    return 0;
 }

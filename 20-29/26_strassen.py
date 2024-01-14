@@ -2,9 +2,6 @@
 import numpy as np
 import time
 
-# choose your square matrix size
-matrix_size = 64
-
 def naive_multiplication(A, B):
     n, m, p = A.shape[0], A.shape[1], B.shape[1]
     C = np.array([[0]*p for i in range(n)])
@@ -15,15 +12,28 @@ def naive_multiplication(A, B):
                 C[i][j] = C[i][j] + A[i][k]*B[k][j]
     return C
 
-def split(matrix):
+def split_matrix(matrix):
     n = len(matrix)
-    return matrix[:n//2, :n//2], matrix[:n//2, n//2:], matrix[n//2:, :n//2], matrix[n//2:, n//2:]
+    return matrix[:n/2, :n/2], matrix[:n/2, n/2:], matrix[n/2:, :n//2], matrix[n/2:, n/2:]
 
 def strassen(A, B):
     if len(A) <= 2:
         return naive_multiplication(A, B)
-    a, b, c, d = split(A)
-    e, f, g, h = split(B)
+    
+    # note that here, each letter corresponds to a a matrix entry:
+
+    # M =
+    #     [ a   b ]
+    #     [ c   d ]
+    
+    # similarly, 
+    # N = 
+    #     [ e   f ]
+    #     [ g   h ]
+    
+    a, b, c, d = split_matrix(A)
+    e, f, g, h = split_matrix(B)
+    
     M1 = strassen(a+d, e+h)
     M2 = strassen(d, g-e)
     M3 = strassen(a+b, h)
@@ -39,22 +49,20 @@ def strassen(A, B):
     return C
 
 
+# choose your square matrix size
+matrix_size = 64
 
 A = np.random.rand(matrix_size,matrix_size)
 B = np.random.rand(matrix_size,matrix_size)
 
-before2 = time.time()
-for i in range(1):
-    C = naive_multiplication(A, B)
-    print(i)
-after2 = time.time()
-
 before1 = time.time()
-for i in range(1):
-    C = strassen(A, B)
-    print(C)
+C = naive_multiplication(A, B)
 after1 = time.time()
 
+before2 = time.time()
+C = strassen(A, B)
+after2 = time.time()
 
-print("naive_multiplication: " + str(after2 - before2))
-print("strassen: " + str(after1 - before1))
+
+print("naive_multiplication: " + str(after1 - before1))
+print("strassen: " + str(after2 - before2))

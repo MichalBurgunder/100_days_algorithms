@@ -16,20 +16,10 @@ int get_min_element(int the_array[]) {
 }
 
 int levenshtein_distance(const std::string &string_a, const std::string &string_b, std::vector<std::vector<int> > *arr) {
-    std::cout << "everywhere" << std::endl;
-    // // std::cout << string_a.length() << std::endl;
-    // // std::cout << string_b.length() << std::endl;
-    // std::cout << (*arr).size() << std::endl;
-    std::cout << (*arr)[1][1] << std::endl;
-    std::cout << "there" << std::endl;
     if((*arr)[string_a.length()][string_b.length()] != -1) {
-        std::cout << "end" << std::endl;
         return (*arr)[string_a.length()][string_b.length()];
     }
 
-    // std::cout << string_a.length()-1 << std::endl;
-    // std::cout << string_b.length() << std::endl;
-    // std::cout << string_b.length() << std::endl;
     int integer_array[] = {
         (*arr)[string_a.length()-1][string_b.length()]+1,
         (*arr)[string_a.length()][string_b.length()-1]+1,
@@ -39,14 +29,13 @@ int levenshtein_distance(const std::string &string_a, const std::string &string_
     return get_min_element(integer_array);
 }
 
-
 int main() {
     std::string a_string_simple = "yahoo!";
     std::string b_string_simple = "yippie";
 
 
-    std::string a_string_complex = "a";
-    std::string b_string_complex = "bac";
+    std::string a_string_complex = "";
+    std::string b_string_complex = "bca";
 
     int len_a = a_string_complex.length();
     int len_b = b_string_complex.length();
@@ -55,11 +44,11 @@ int main() {
 
 
     for (int i = 0; i < len_a; i++) {
-        dynamic_array[i][0] = 1;
+        dynamic_array[i][0] = i;
     }
 
     for (int j = 0; j < len_b; j++) {
-        dynamic_array[0][j] = 1;
+        dynamic_array[0][j] = j;
     }
 
     if (a_string_complex[0] == b_string_complex[0]) {

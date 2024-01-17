@@ -1,5 +1,5 @@
 #include <iostream>
-#include <string>
+// #include <string>
 
 using namespace std;
 
@@ -14,49 +14,65 @@ int get_min_element(int the_array[]) {
     std::cout << the_int << std::endl;
     return the_int;
 }
-// the two following functions make our string to be analyzed smaller, i.e. allow for divide and conquer, so that we can dynamically solve sub problems before tackling the larger one of the Levenshtein distance between the two original strings
-string head(string some_string) {
-    // we return only the first letter of the string. This will allow us to analyze the string character by character
-    return some_string.substr(0, 1);
-}
-string tail(string some_string) {
-    // here instead, we return the whole substring from the SECOND character, until the last character. This will break up our string into substrings, which we can anaylze. 
-    return some_string.substr(1, some_string.length());
+
+int levenshtein_distance(const std::string &string_a, const std::string &string_b, std::vector<std::vector<int> > *arr) {
+    std::cout << "everywhere" << std::endl;
+    // // std::cout << string_a.length() << std::endl;
+    // // std::cout << string_b.length() << std::endl;
+    // std::cout << (*arr).size() << std::endl;
+    std::cout << (*arr)[1][1] << std::endl;
+    std::cout << "there" << std::endl;
+    if((*arr)[string_a.length()][string_b.length()] != -1) {
+        std::cout << "end" << std::endl;
+        return (*arr)[string_a.length()][string_b.length()];
+    }
+
+    // std::cout << string_a.length()-1 << std::endl;
+    // std::cout << string_b.length() << std::endl;
+    // std::cout << string_b.length() << std::endl;
+    int integer_array[] = {
+        (*arr)[string_a.length()-1][string_b.length()]+1,
+        (*arr)[string_a.length()][string_b.length()-1]+1,
+        (*arr)[string_a.length()-1][string_b.length()-1]
+    };
+
+    return get_min_element(integer_array);
 }
 
-int levenshtein_distance(std::string string_a, std::string string_b) {
-    // we begin by checking the lengths of stirng. If one of them is 0, it's easy: it's just the length of the other string (we add a new character for every change)
-    if (string_a.length() == 0) {
-        return string_b.length();
-    }
-    // the same goes for the other string
-    else if ( string_b.length() == 0 ) {
-        return string_a.length();
-    // if, however, the first part of the string is the same, we need to analyze the levenshtein difference of its tail. Differently put, if the first 
-    } else if (head(string_a) == head(string_b)) { 
-        return levenshtein_distance(tail(string_a), tail(string_b));
-    }
-    else {
-        int integer_array[] = {
-            levenshtein_distance(tail(string_a), string_b),
-            levenshtein_distance(string_a, tail(string_b)),
-            levenshtein_distance(tail(string_a), tail(string_b))
-        };
-
-        return get_min_element(integer_array) + 1;
-    }
-}
 
 int main() {
     std::string a_string_simple = "yahoo!";
     std::string b_string_simple = "yippie";
 
-    
-    std::string a_string_complex = "yippie kay-yay!";
-    std::string b_string_complex = "darn hippies";
 
-    std::cout << levenshtein_distance(a_string_simple, b_string_simple) << std::endl;
-    std::cout << levenshtein_distance(a_string_complex, b_string_complex) << std::endl;
+    std::string a_string_complex = "a";
+    std::string b_string_complex = "bac";
 
-    // TODO: implement dynamic programming version
+    int len_a = a_string_complex.length();
+    int len_b = b_string_complex.length();
+
+    std::vector<std::vector<int> > dynamic_array(len_a+1, std::vector<int>(len_b+1, -1));
+
+
+    for (int i = 0; i < len_a; i++) {
+        dynamic_array[i][0] = 1;
+    }
+
+    for (int j = 0; j < len_b; j++) {
+        dynamic_array[0][j] = 1;
+    }
+
+    if (a_string_complex[0] == b_string_complex[0]) {
+        dynamic_array[0][0] = 0;
+    }
+
+
+    for (int i = 1; i <= len_a; i++) {
+        for (int j = 1; j <= len_b; j++) {
+            dynamic_array[i][j] = levenshtein_distance(a_string_complex.substr(0, i), b_string_complex.substr(0, j), &dynamic_array);
+        }
+    }
+
+    int result = levenshtein_distance(a_string_complex, b_string_complex, &dynamic_array);
+    std::cout << result << std::endl;
 }

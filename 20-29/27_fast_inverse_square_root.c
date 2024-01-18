@@ -1,3 +1,5 @@
+// FAST INVERSE SQUARE ROOT
+
 #include <stdio.h>
 #include <math.h>
 
@@ -22,6 +24,7 @@ float Q_rsqrt( float number ) {
 
 
 int main() {
+	// we take some random number, for which we want to estimate a square root
     const float x = 10000;
     printf("%f\n", sqrt(x));
     float res = Q_rsqrt(x);

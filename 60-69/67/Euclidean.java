@@ -1,22 +1,26 @@
+// EUCLIDEAN ALGORITHM
 
 public class Euclidean {
 
+    static int bigger;
+    static int smaller;
 
-    public static void main(String[] args) {
+    static int bigger_og;
+
+    // here we just take the command line arguments and parse them into our
+    // function. If none are given, we set some default ones.
+    public static void setNums(String[] args) {
         int n1 = 0;
         int n2 = 0;
-        
+
         try {
             n1 = Integer.parseInt(args[0]);
             n2 = Integer.parseInt(args[1]);
         } catch (Exception e) {
-            System.out.println("Must input two integers. Exiting.");
-            System.exit(1);
+            System.out.println("Using two default variables");
+            n1 = 63;
+            n2 = 49;
         }
-
-        int bigger_og = 0;
-        int bigger = 0;
-        int smaller = 0;
 
         if(n1 > n2) {
             bigger_og = n1;
@@ -27,7 +31,9 @@ public class Euclidean {
             bigger = n2;
             smaller = n1;
         }
+    }
 
+    public static void euclideanAlgorithm() {
         int counter = 1;
         int difference = 0;
 
@@ -47,7 +53,17 @@ public class Euclidean {
             }
         }
 
-        System.out.println("Greatest Commone Divisor: " + String.valueOf(smaller));
+        System.out.println("Greatest Common Divisor: " + String.valueOf(smaller));
         System.exit(0);
+    }
+    public static void main(String[] args) {
+        
+        // we first set our numbers to to compute the algorithm with. You can
+        // set the integers on line __ TODO, or alternatively, pass them as command
+        //  line arguments
+        setNums(args);
+
+        // and now, we run the algorithm
+        euclideanAlgorithm();
     }
 }

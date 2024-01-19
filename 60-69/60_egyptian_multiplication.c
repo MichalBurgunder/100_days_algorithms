@@ -1,3 +1,5 @@
+// EGYPTIAN MULTIPLICATION
+
 #include <stdio.h>
 
 // we compute log2n via a recursive method and remove the remainder
@@ -7,22 +9,25 @@ unsigned int log2n(unsigned int num) {
 
 int main()
 {
-    // we initialize our array of additives
+    //to begin, first we initialize our array of additives
     int the_size = log2n(__INT_MAX__);
     int current[the_size];
     for(int i=0;i<the_size;i++) {
         current[i] = 0;
     }
 
-    // define the two numbers needing multiplying
-    // note, that we are assuming small numbers, as this is likely what was needed in the past
-    // larger numbers would need to be broken down via recursion to maximize "efficiency"
+    // we define the two numbers needing multiplying
+    // note, that we are assuming small numbers, as this is what was needed in
+    // the past. Larger numbers would need to be broken down via recursion to
+    // maximize "efficiency"
     unsigned int a = 3;
     unsigned int b = 31;
 
-    // let's find the larger of the two numbers, to ease the final summing
+    // first, let's find the larger of the two numbers, to ease the final
+    // summing operation
     unsigned int larger;
     unsigned int smaller;
+
     if(a > b) {
         larger = a;
         smaller = b;
@@ -31,12 +36,13 @@ int main()
         smaller = a;
     }
 
-    // now we run our algorithm
+    // now, we run our algorithm
     int max_bit = 0;
     int now = 1;
     int current_large = larger;
-    while(1) {
-        while(1) {
+    
+    for (;;) {
+        for (;;) {
             if(now > current_large) {
                 current_large = current_large - (now/2);
                 break;

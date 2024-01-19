@@ -213,8 +213,10 @@ end
 
 
 
-# in essence, we can replace this bitmap with any maze we want.
-# This is just a toy example
+# In essence, we can replace this bitmap with any maze we want. In our case,
+# the 1s are walls, and 0s are empty spaces (passage ways). The bitmap given is
+# small, although this is just a toy example to illustrate the algorithm. We can
+# replace the bitmap with with other larger bitmap, if we wished to.
 maze = [
     0 1 1 1 1 1 1 1 1 1 1 1;
     0 1 0 0 0 0 0 0 0 1 0 1;

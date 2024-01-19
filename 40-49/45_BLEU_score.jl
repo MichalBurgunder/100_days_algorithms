@@ -30,12 +30,10 @@ function bleu_score(o_sentence, t_sentence)
     o_length = length(o_sentence)
     t_length = length(t_sentence)
 
-    penalty = nothing
-    if o_length < t_length
-        penalty = 1
-    else
-        penalty = exp(1 - (t_length/o_length))
-    end
+    # we first set the penalty value for our sentence. If the translated
+    # sentence is longer than the original, then clearly our translation
+    # needs to be more concise to be good
+    penalty = o_length < t_length ? 1 : xp(1 - (t_length/o_length))
 
     clipped_precision_score = []
 
@@ -65,8 +63,11 @@ function bleu_score(o_sentence, t_sentence)
     return s
 end
 
-
-original = "It is a guide to action which ensures that the military always obeys the command of the party"
-machine_translated = "It is a guide to action that ensures that the military will forever heed Party commands."
+# we pull two sentences from the original BLEU paper to illustrate the
+# translation metric, as given to us by the research paper.
+original = "It is a guide to action which ensures that the 
+                                military always obeys the command of the party"
+machine_translated = "It is a guide to action that ensures that the military 
+                                will forever heed Party commands."
 
 println(bleu_score(original, machine_translated))

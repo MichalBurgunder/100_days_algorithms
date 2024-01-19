@@ -11,12 +11,16 @@
 misc
 playground*
 *.png
+*.bmp
 *.jpeg
 *.jpg
 *.class
 *.gif
 *.json
 *.rtf
+*.pdf
 
 _archive/*
 Barnes-Hut-Simulation/*
+
+a.out

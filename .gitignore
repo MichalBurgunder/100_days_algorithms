@@ -23,4 +23,7 @@ playground*
 _archive/*
 Barnes-Hut-Simulation/*
 
+node_modules
 a.out
+
+wavefunction-collapse

@@ -16,6 +16,20 @@ function create_rule(the_initial, the_after) {
     }
 }
 
+s -> (np)(vp)
+np -> (dt)(n)
+n -> (adj)(n)
+
+
+
+('The', 'DT') The
+('cat', 'NN') cat
+('sat', 'VBD') sat
+('on', 'IN') on
+('the', 'DT') the
+('mat', 'NN') mat
+
+
 grammar = [
     ["S", ["NP", "VP"]],
     ["VP", ["V", "NP"]],

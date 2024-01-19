@@ -1,12 +1,15 @@
 """
-This is the function Newton's method is supposed to estimate the roots to. Note, that because this is a quintic, there is no analytical way to find the root, which means we are foreced to use an iterative method.
+This is the function Newton's method is supposed to estimate the roots to. Note,
+that because this is a quintic, there is no analytical way to find the root,
+which means we are foreced to use an iterative method.
 """
 function f(x)
     return x^5 - 10*x^4 + 42*x^3 + 193*x^2 + 57*x + 130
 end
 
 """
-The derivative of f. This will be used to find the slope at any given point, along which we travel towards a root
+The derivative of f. This will be used to find the slope at any given point,
+along which we travel towards a root
 """
 function fprime(x)
     return 5*x^4 - 40*x^3 +126*x^2 + 386*x + 57
@@ -14,7 +17,10 @@ end
 
 
 """
-Newtons Method. We only iterate 10 steps, as this gets us to our result. Note, that depending on the function it might be slitghtly higher, although not much higher. Note also, that Newton's method isn't guaranteed to find a root, and requires manual fine tuning. 
+Newtons Method. We only iterate 10 steps, as this gets us to our result. Note,
+that depending on the function it might be slitghtly higher, although not much
+higher. Note also, that Newton's method isn't guaranteed to find a root, and
+requires manual fine tuning. 
 """
 function newtons_method()
     # we start with an arbitrary number

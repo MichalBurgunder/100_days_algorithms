@@ -7,7 +7,7 @@ using namespace std;
 // custom function to multiply a matrix by a vector
 vector<float> mat_mult(vector<vector<float>> A, vector<float> B)
 {
-    // Initialize the result matrix with zeros
+    // initialize the result matrix with zeros
     vector<float> C = {0, 0};
 
 
@@ -22,11 +22,7 @@ vector<float> mat_mult(vector<vector<float>> A, vector<float> B)
 
 // returns our appropriate sigma value, based on the angle
 int sigma_i(float angle) {
-    if(angle > 0) {
-        return 1;
-    } else {
-        return -1;
-    }
+    return angle > 0 ? 1 : -1;
 }
 
 // we return our K value based on i
@@ -53,9 +49,6 @@ int main()
 
     int n = 20;
     float angle = 5*M_PI/17;
-    cout << "\ncmath computed values for cosine and sine: " << endl;
-    cout << "cosine: " << cos(angle) << endl;
-    cout << "sine: " << sin(angle) << endl;
 
     for (int i = 0; i < n; i++)
     {
@@ -69,11 +62,13 @@ int main()
         v = mat_mult(r, v);
         angle = angle - (s * gamma_i(i));
     }
+    cout << "\ncmath computed values for cosine and sine: " << endl;
+    cout << "cosine: " << cos(angle) << endl;
+    cout << "sine: " << sin(angle) << endl;
+
     cout << "\nCORDIC computed values for cosine and sine:" << endl;
     cout << "cosine: " << v[0] << endl;
     cout << "sine: " << v[1] << endl;
-
-
 
     return 0;
 }

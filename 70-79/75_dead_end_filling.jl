@@ -1,3 +1,4 @@
+# DEAD END FILLING ALGORITHM
 
 using Pkg
 # Pkg.add("Images")
@@ -27,7 +28,6 @@ function convert_to_RGB(maze, color=nothing)
     return new_maze
 end
 
-## STOPPED HERE
 function resize(maze, new_size)
     m, n = size(maze)
     new_maze = Array{RGB}(undef, new_size*m, new_size*n)
@@ -36,7 +36,7 @@ function resize(maze, new_size)
         for new_row in 1:new_size
             for j in 0:n-1
                 for new_column in 1:new_size
-                    new_maze[i*new_size+new_row , j*new_size+new_column] = maze[i+1, j+1]
+                    new_maze[i*new_size+new_row, j*new_size+new_column] = maze[i+1, j+1]
                 end
             end
         end 
@@ -78,9 +78,12 @@ function where_next_empty(maze, i, j)
     new_neighbors = map(neighbor -> neighbor .+ [i, j], neighbor_translation)
 
     for next in 1:4
-        if is_valid_neighbor(new_neighbors[next], maze) && # is not outside of maze
-            is_empty(maze[new_neighbors[next][1], new_neighbors[next][2]]) && # the field is empty
-            is_dead_end(maze, new_neighbors[next][1], new_neighbors[next][2]) # the next field only has one other place to go
+            # is not outside of maze
+        if is_valid_neighbor(new_neighbors[next], maze) && 
+            # the field is empty
+            is_empty(maze[new_neighbors[next][1], new_neighbors[next][2]]) && 
+            # the next field only has one other place to go
+            is_dead_end(maze, new_neighbors[next][1], new_neighbors[next][2]) 
 
             return new_neighbors[next]
         end
@@ -114,7 +117,8 @@ function get_valid_neighbors(maze, i, j)
     # downstream
     for n in eachindex(neighbor_translation)
         new_field = [i, j] .+ neighbor_translation[n]
-        if is_valid_neighbor(new_field, maze) && is_empty(maze[new_field[1], new_field[2]])
+        if is_valid_neighbor(new_field, maze) &&
+                                    is_empty(maze[new_field[1], new_field[2]])
             push!(neighbors, new_field)
         end
     end

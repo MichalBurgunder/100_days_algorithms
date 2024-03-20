@@ -1,4 +1,4 @@
-// SLEEP SORT
+// SLEEP SORT ALGORITHM
 
 // we could also place them into an array if we wished to, although this is
 // just a formalization. Given that out we are working in a sync environment, we

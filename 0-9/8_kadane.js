@@ -1,3 +1,5 @@
+// KADANE'S ALGORITHM
+
 function kadanes_algorithm(the_array) {
     let max_now = 0;
     let max_overall = 0;

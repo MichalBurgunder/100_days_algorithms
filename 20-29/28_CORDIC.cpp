@@ -1,10 +1,15 @@
+// CORDIC ALGORITHM
+
 #include <iostream>
 #include <vector>
 #include <cmath>
 
 using namespace std;
 
-// custom function to multiply a matrix by a vector
+// custom function to multiply a matrix by a vector note that we can replace
+// this function with the more computationally efficient Strassen algorithm. For
+//  demonstrative purposes, we keep it simple, and simply use naive matrix
+// multiplicaiton.  
 vector<float> mat_mult(vector<vector<float>> A, vector<float> B)
 {
     // initialize the result matrix with zeros

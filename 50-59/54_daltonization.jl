@@ -1,3 +1,5 @@
+# DALTONIZATION ALGORITHM
+
 # while the RGB format works best when working with images on computers, the LMS more
 # closely corresponds to human reality, in that this color space respects human biology
 
@@ -14,7 +16,7 @@ lms2rgb = [
     -0.04188950 -0.11815433  1.06888657;
 ]
 
-# the different corrections depending on one's colorblindess
+# the different corrections depending on one's colorblindness
 # the values cannot ever be exactly correct, as everyone's colorblindness differs slightly
 protanopia = [
     0 0.90822864 0.008192;

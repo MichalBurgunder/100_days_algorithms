@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.Arrays;
 
 public class Fisher_Yates {
+    
     public static void main(String[] args) {
         // We note that in order to shuffle with best practices, we need at
         // least one extra variable that we use to swap out numbers, and a
@@ -17,12 +18,14 @@ public class Fisher_Yates {
         // our temporary variable, used for swapping
         int temp = 0;
 
+        // here we create our random number generator (such as the linear
+        // congruential generator)
+        Random rand = new Random();
+        
         // in order to shuffle, we will need to evoke every element at least
         // once, hence the single loop. We begin at the end of the array
         for(int i = ordered_array.length-1; 0<i-1; i--) {
-            // here we query a random number (such as via the linear
-            // congruential generator)
-            Random rand = new Random();
+            // we query a random number 
             int new_position = rand.nextInt(i);
 
             // with the random number, we swap that array position with the i'th 

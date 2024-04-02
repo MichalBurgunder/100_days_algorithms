@@ -3,8 +3,10 @@
 #include <stdio.h>
 #include <math.h>
 
-// fast inverse square root, as specified by Wikipedia (https://en.wikipedia.org/wiki/Fast_inverse_square_root)
-// below is the actual implementation of the algorithm found in production, comments including
+// fast inverse square root, as specified by Wikipedia:
+// 						https://en.wikipedia.org/wiki/Fast_inverse_square_root
+// below is the actual implementation of the algorithm found in production,
+// comments including
 float Q_rsqrt( float number ) {
 	long i;
 	float x2, y;
@@ -20,8 +22,6 @@ float Q_rsqrt( float number ) {
 
 	return 1/y;
 }
-
-
 
 int main() {
 	// we take some random number, for which we want to estimate a square root

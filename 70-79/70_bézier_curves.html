@@ -1,28 +1,52 @@
-<!-- these first two lines define our "canvas", a memory object within which we may draw things onto. We draw a black recatable around our canvas, to map out exactly where we are drawing things.  -->
+<!--
+    these first two lines define our "canvas", a memory object within which we
+    may draw things onto. We draw a black recatable around it, to clarify
+    exactly where we are able to draw things.
+-->
 <canvas id="myCanvas" width="1000" height="700" style="border:1px solid black;">
 </canvas>
 
-<!-- given that this is an HTML file, we can only import JavaScript by using the <script> tag. The rest of the file consitsts of only JS code -->
+<!--
+    given that this is an HTML file, we can only use JavaScript within the
+    <script> element. For this reason, the rest of the file is code that is
+    included in this tag.
+-->
 <script>
-    
-// here we get the canvas element from the HTML code above. This will allow us to draw things into it programmatically. 
+
+// here we get the canvas element from the HTML code above. This will allow us
+// to draw things into it programmatically. 
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 ctx.fillStyle = "red";
 
-// the linear Bézier curve, i.e. only two points. Overall, this formula isn't used in practice, as we can more easily draw the line using the standard linear equation y = mx + c. Note, that for this, as well as all other equations below, we compute the coordinates of the curves coordinate by coordinate
+// the linear Bézier curve, i.e. only two points. Overall, this formula isn't
+// used in practice, as we can more easily draw a line using the standard linear
+//  equation 
+//                          y = mx + c.
+// Note, that for this equation, as well as all other equations below for higher
+//  dimensional Bézier curves, we compute the points that make up the curve
+// coordinate by coordinate
 function linearBezierCurveCoord(t, Ps, d) {
     return (1-t)*Ps[0][d] + t*Ps[1][d]
 }
 
-// the quadratic Bézier curve however is more useful, as these cannot be drawn with linear equations. 
+// the quadratic Bézier curve uses three control points. As such a line (in the
+// general case) cannot be drawn with linear equations, the quadratic curve
+// finds significantly more use. Note that Pascal's triagnle emerges, and
+// becomes more obvious with higher dimensional polynomials (it is also present
+// in the linear Bézier curve, with values 1 and 1)
 function quadraticBezierCurveCoord(t, Ps, d) {
     return Math.pow(1-t, 2)*Ps[0][d] +
            2 * (1-t) * t * Ps[1][d] +
            Math.pow(t,2) * Ps[2][d]
 }
 
-// with cubic Bézier curves, things get funky. Nonetheless, the underlying mechanism is the same: increase the influence of previous points, while increasing the influence of later points. Note here, that Pascal's triagnle emerges, just like with higher dimensional polynomials. 
+// with cubic Bézier curves, things get funky. Nonetheless, the underlying
+// mechanism is the same: increase the influence of previous points, while
+// increasing the influence of later points. The cubic Bézier curves are used
+// much more in practice, as we can now "match up" two or more curves to make a
+// smooth figure whose derivatives at the connection point tend to the same
+// value.
 function cubicBezierCurveCoord(t, Ps, d) {
     return Math.pow((1-t), 3) * Ps[0][d] + 
            3 * Math.pow(1-t, 2) * t * Ps[1][d] +
@@ -30,17 +54,25 @@ function cubicBezierCurveCoord(t, Ps, d) {
            Math.pow(t, 3) * Ps[3][d]
 }
 
-// this way we can choose the type of Bézier curve we wish to use
-curveFunctions = [()=>{}, linearBezierCurveCoord, quadraticBezierCurveCoord, cubicBezierCurveCoord]
+// with this array, we can choose the type of Bézier curve programmatically
+curveFunctions = [
+    ()=>{},
+    linearBezierCurveCoord,
+    quadraticBezierCurveCoord,
+    cubicBezierCurveCoord
+]
 
-// draws the actual Bézier curve. Note that we can specify the dimension of the
-// Bézier curve we wish to use.
-function drawBézierCurve(Ps, curveDimsension=3) {
+// the functuon draws the actual Bézier curve. Note that we can specify the
+// dimension of the Bézier curve we wish to use.
+function drawBézierCurve(Ps, curveDimension=3) {
     for(let i = 0; i < number_of_points; i++) {
-        // because we are drawing in 2D space, we only have 2 dimensions. However, we can increase this to any number of dimensions, using the same formulas
+        // because we are drawing in 2D space, we only have 2 dimensions.
+        // However, we can increase this to any number of dimensions, using the
+        // same formulas. So Bézier curves in 3D space are only a single
+        //computation away 
         coordinate_point = [
-            curveFunctions[curveDimsension](i/number_of_points, Ps, 0),
-            curveFunctions[curveDimsension](i/number_of_points, Ps, 1)
+            curveFunctions[curveDimension](i/number_of_points, Ps, 0),
+            curveFunctions[curveDimension](i/number_of_points, Ps, 1)
         ]
         ctx.fillRect(coordinate_point[0], coordinate_point[1], 3,3);
     }
@@ -51,16 +83,19 @@ function drawBézierCurve(Ps, curveDimsension=3) {
 // help us identify what is going on in the canvas
 function drawPoints(points, size=3) {
     temp = ctx.fillStyle
+    // we mark the control points as blue rectangles...
     ctx.fillStyle = "blue";
     points.forEach(point => {
         ctx.fillRect(point[0], point[1], size, size);
     })
 
+    // ... and label the different points as they appear in our arrays
     ctx.font = "25px Arial"
     ctx.fillStyle = "black";
     for(let i = 0; i < points.length; i++) {
         ctx.fillText(i+1, points[i][0]-2, points[i][1]-10);
     }
+    // we reset the original fillStyle
     ctx.fillStyle = temp;
 }
 
@@ -80,13 +115,14 @@ function main(points, color) {
     ctx.fillStyle = temp;
 }
 
-// these are some points that make for good curves. If you wish, you can uncomment the following arrays to draw other curves instead
-loopPoints = [[200 ,600], [850, 100], [50, 100], [700, 600]]
-loopPoints = [[200, 300], [400, 600], [800, 100], [600, 500]]
-loopPoints = [[100 ,600], [180, 200], [900, 600], [800, 100]]
+// these are some points that make for good curves. If you wish, you can
+// uncomment the following arrays to draw other curves instead
+points = [[200 ,600], [850, 50], [50, 100], [700, 600]]
+points = [[200, 300], [400, 600], [750, 100], [600, 500]]
+points = [[100 ,600], [180, 200], [900, 600], [800, 100]]
 
 curveColor = "green"
 
-main(loopPoints, curveColor)
+main(points, curveColor)
 </script>
 

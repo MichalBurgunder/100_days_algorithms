@@ -1,0 +1,80 @@
+<!-- these first two lines define our "canvas", a memory object within which we may draw things onto. We draw a black recatable around our canvas, to map out exactly where we are drawing things.  -->
+<canvas id="myCanvas" width="1000" height="700" style="border:1px solid black;">
+</canvas>
+
+<!-- given that this is an HTML file, we can only import JavaScript by using the <script> tag. The rest of the file consitsts of only JS code -->
+<script>
+// here we get the canvas element from the HTML code above. This will allow us to draw things into it programmatically. 
+const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext("2d");
+ctx.fillStyle = "red";
+
+// the linear Bézier curve, i.e. only two points. Overall, this formula is insignificant, as we can more easily draw the line using the standard linear equation y = mx + c. Note, that for this, as well as all other equations below, we compute the coordinates of the curves by coordinate
+function linearBezierCurveCoord(t, Ps, d) {
+    return (1-t)*Ps[0][d] + t*Ps[1][d]
+}
+
+// the quadratic Bézier curve however is more useful, as these cannot be drawn with linear equations. 
+function quadraticBezierCurveCoord(t, Ps, d) {
+    return Math.pow(1-t, 2)*Ps[0][d] +
+            2*(1-t)*t*Ps[1][d] +
+             Math.pow(t,2)*Ps[2][d]
+}
+
+function cubicBezierCurveCoord(t, Ps, d) {
+    return Math.pow((1-t), 3) * Ps[0][d] + 
+           3 * Math.pow(1-t, 2) * t * Ps[1][d] +
+           3 * (1-t)*Math.pow(t,2)*Math.pow(t, 3)*Ps[2][d] +
+           Math.pow(t, 3) * Ps[3][d]
+}
+
+curveFunctions = [null, linearBezierCurveCoord, quadraticBezierCurveCoord, cubicBezierCurveCoord]
+
+function drawBézierCurve(Ps, curveDimsension=3) {
+    for(let i = 0; i < number_of_points; i++) {
+        coordinate_point = [curveFunctions[curveDimsension](i/number_of_points, Ps, 0), curveFunctions[curveDimsension](i/number_of_points, Ps, 1)]
+        ctx.fillRect(coordinate_point[0], coordinate_point[1], 3,3);
+    }
+    return []
+}
+
+
+function draw_points(points, size=3) {
+    temp = ctx.fillStyle
+    ctx.fillStyle = "blue";
+    points.forEach(point => {
+        ctx.fillRect(point[0], point[1], size, size);
+    })
+
+    ctx.fillStyle = "black";
+    for(let i = 0; i < points.length; i++) {
+        console.log(i)
+        ctx.fillText("hello", points[0]+40, points[1]+40);
+    }
+    ctx.fillText("hello",200,200)
+    ctx.fillStyle = temp;
+}
+
+function drawCurves(Ps, color) {
+    
+    number_of_points = 200
+    draw_points(Ps, 10)
+    
+    temp = ctx.fillStyle
+    ctx.fillStyle = color
+    drawBézierCurve(Ps, 1)
+    // drawBézierCurve(Ps, 2)
+    // drawBézierCurve(Ps, 3)
+    ctx.fillStyle = temp;
+}
+// the most basic Bézier curve, is the linear one. This is simply a parametric curve that is just a striaght line
+linePoints = [[200, 300], [400, 800], [800, 100], [600, 500]]
+
+randomLinePoints = [[100 ,600], [180, 200], [800, 100], [600, 500]]
+loopPoints = [[200 ,600], [850, 200], [50, 300], [700, 600]]
+// drawMyCubicBezierCurves(Ps, "red")
+drawCurves(loopPoints, "green")
+
+
+</script>
+

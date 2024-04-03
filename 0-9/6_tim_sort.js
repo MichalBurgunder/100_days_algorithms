@@ -28,9 +28,8 @@ function insertion_sort(array, left=0, right=array.length) {
 }
 
 
+// this is the merge from merge sort. We basically take an array, split it in two, and then combine the two subarrays by aligning its elements like a "zipper"
 function merge(array, l, r, e) { 
-
-
     left = array.slice(l, r+1)
     right = array.slice(r+1, e+1)
 
@@ -77,13 +76,13 @@ function tim_sort(array) {
     // array needed for our insertion sorts
     let minrun = find_minrun(n) 
 
+    // we first sort the minimum length subarrays using insertion sort
     for(let i=0;i<n;i+=minrun) {
         end = Math.min(i + minrun - 1, n - 1) 
         insertion_sort(array, i, end) 
     }
     
-    size = minrun
-
+    // then we simply merge each two sorted arrays, so that at the end, we get a fully sorted array. Note that here, we sort arrays two by two, making their size bigger by a factor 2 every time we pass through this outer loop.
     for (let size = minrun; size < n+1; size *= 2) {
         for (let left = 0; left < n; left += 2 * size) {
             const mid = left + size - 1;
@@ -107,20 +106,7 @@ console.time()
 console.log(tim_sort(array))
 console.timeEnd()
 
+// our implementation of timsort in JavaScript is nowhere near the efficient implementation in its compiler. The reason for this, is that we are performing significant memory allocations, along with the fact that we are using pre-given functions, which also take time to compile and run. Node however is implemented with C++ (for some parts), where efficiency is at a near theoretical maximum. We have not tried to be this precise in our sorting algorithm, hence why it significantly underpeforms.  
 console.time()
 console.log(array.sort())
 console.timeEnd()
-
-// res = 
-// res = 
-// array2.sort((a, b) => {
-//     if (a > b) {
-//       return 1;
-//     } else return -1;
-//   });
-// console.log(array2)
-// console.timeEnd()
-
-
-
-// console.log(insertion_sort(array, 0, array.length-1))

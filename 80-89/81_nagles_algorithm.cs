@@ -71,44 +71,7 @@ class Message {
 
 // Hello World! program
 namespace HelloWorld {
-
-    class Hello {
-  
-        static void Main(string[] args)
-        {
-            // System.Console.WriteLine("Hello World!");
-            
-            int passes = 100
-            mml = 100 // message length
-            tbts = 1000 // total bytes to send
-            int lengthOfMessage
-            Router router = new Router()
-
-
-            // without nagle (naive packet sending)
-            byte[mml] draft;
-            for(int i = 0; i < passes; i++) {
-                lengthOfMessage = Math.floor(mml*Random.random())
-
-                
-                for(int i = 0; i < lengthOfMessage; i++) {
-                    draft[i] = Random.random({0,1})
-                }
-                byte[mml] message = Message.createMessage(draft)
-                router.placeMessageInQueue(message)
-                draft = {}
-            }
-
-            byte[mml] message = Message.createMessage(draft)
-            router.placeMessageInQueue()
-            router.passInformationToDestination()
-            
-            int fullDataSizeNaive = router.getPassedDataLength()
-
-            // DONE. some cleaning
-            router.clean()
-            lengthCurrentMessage = 0
-            // with Nagle (smart packet sending)
+    static void naglePacketSending(Router router) {
             byte[mml] draft;
 
             for(int i = 0; i < passes; i++) {
@@ -123,12 +86,51 @@ namespace HelloWorld {
                         router.placeMessageInQueue(message)
                         draft = {}
                     }
-                }
-                
+                }  
             }
             byte[mml] message = Message.createMessage(draft)
             router.placeMessageInQueue(message)
             router.passInformationToDestination()
+    }
+
+    static void naivePacketSending(Router router) {
+        byte[mml] draft;
+        for(int i = 0; i < passes; i++) {
+            lengthOfMessage = Math.floor(mml*Random.random())
+            
+            for(int i = 0; i < lengthOfMessage; i++) {
+                draft[i] = Random.random({0,1})
+            }
+            byte[mml] message = Message.createMessage(draft)
+            router.placeMessageInQueue(message)
+            draft = {}
+        }
+
+        byte[mml] message = Message.createMessage(draft)
+        router.placeMessageInQueue()
+        router.passInformationToDestination()
+    }
+    class Hello {
+  
+        static void Main(string[] args) {
+            // System.Console.WriteLine("Hello World!");
+            
+            int passes = 100
+            mml = 100 // message length
+            tbts = 1000 // total bytes to send
+            int lengthOfMessage
+            Router router = new Router()
+
+            // without nagle (naive packet sending)
+            naivePacketSending(router)
+            int fullDataSizeNaive = router.getPassedDataLength()
+
+            // DONE. some cleaning
+            router.clean()
+            lengthCurrentMessage = 0
+            // with Nagle (smart packet sending)
+
+            naglePacketSending(router)
             int fullDataSizeNagle = router.getPassedDataLength()
             
             System.println(f"Full datasize naive: " {fullDataSizeNaive})

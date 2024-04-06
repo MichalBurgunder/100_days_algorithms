@@ -15,9 +15,10 @@ function kadanes_algorithm(the_array) {
             max_overall = max_now;
         }
     
-        // the key insight is here: if the sum of the subarray is smaller than 0,
-        // then the trivial subarray [] is always larger (sum([])=0). So we reset
-        // our rolling sum to 0 in that case, and restart our summing from 0. 
+        // the key insight is here: if the sum of the subarray is smaller than
+        // 0, then the trivial subarray [] is always larger than any sum which
+        // is negative. Because of this, we can reset our rolling sum to 0
+        // whenever it is negative, and restart our summing from 0. 
         if (max_now < 0) {
             max_now = 0;
         }

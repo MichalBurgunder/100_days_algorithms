@@ -29,29 +29,31 @@ function insertion_sort(array, left=0, right=array.length) {
 
 
 // this is the merge from merge sort. We basically take an array, split it in two, and then combine the two subarrays by aligning its elements like a "zipper"
-function merge(array, l, r, e) { 
+function merge(array, l, r, e) {
+    // we first take the segment of the array we wish to align and split it into two
     left = array.slice(l, r+1)
     right = array.slice(r+1, e+1)
 
-    let i = 0
-    let j = 0
-    let setPosition = l
+    // now we zip them up. We initialize the variables so that we are able to iterate through the array
+    let i = 0 // going through our "left" subarray
+    let j = 0 // going through our "right" subarray
+    let setPosition = l // determines which element to update in the original array
+
+    // and now we zip:
     while (i < left.length && j < right.length) {
-        console.log()
+        // left or right does in next?
         if (left[i] < right[j]) {
-            array[setPosition] = left[i]
+            array[setPosition] = left[i] // left
             i++
             setPosition++
         } else {
-            array[setPosition] = right[j]
+            array[setPosition] = right[j] // right
             j++
             setPosition++
         }
-        console.log("array")
-        console.log(array)
     }
 
-
+    // as the arrays may not be the same length, we apply the rest of the left-over elements of each arrays onto the original array (the four lines below do this for the left array. The following four lines do it for the right array). Note, we could wrap these two code segments into a loop, so that it iterates for all variables involved. However, I decided to keep it this way, for clarity sake. 
     while (i < left.length) {
         array[setPosition] = left[i]
         i++, setPosition++
@@ -64,11 +66,11 @@ function merge(array, l, r, e) {
 }
 
 // timsort combines different sorting algorithms into a single one, such that we
-// use the quantitatively proved best aspects of each algorithm, and combine
-// them into one. The strategy is as follows: 1) we split the array recursively
-// into smaller arrays up to a particular threshold, before we 2) apply
-// insertion sort on each array. These we then combine back into a single array
-// using the "zipper" method of merge sort.
+// use the quantitatively-proved best aspects of each algorithm, and combine
+// them into a single algorithm. The strategy is as follows: 1) We split the array recursively
+// into smaller arrays up to a particular threshold. This threshold is defined by experimentation, usually 32 for randomly sorted arrays on modern CPUs. 2) We apply
+// insertion sort on each subarray. This way, we will have adjecent sorted sequences of threshold length, but no globally sorted sequence yet 3) We combine two of these subarrays together by
+// using the "zipper" method of merge sort, up until there is a single array left, which forecilby must be sorted. 
 function tim_sort(array) {
     const n = array.length
     
@@ -97,9 +99,9 @@ function tim_sort(array) {
 }
   
   
-array = [-1,5,0,-3,11,9,-2,7,0]
-// array = [-1,5,0,-3]
-// array = [1,8,99,100,6,9,40]
+array = [-1, 5, 0, -3 ,11, 9, -2, 7, 0]
+// array = [7, 3, 8, 5]
+// array = [1, 8, 99, 100, 6, 9, 40]
 
 // we measure the time it takes for timsort an the js native sort
 console.time()

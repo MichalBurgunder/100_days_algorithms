@@ -1,4 +1,5 @@
 # RUNGE-KUTTA METHOD
+
 using Pkg
 # Pkg.add("Plots")
 using Plots
@@ -31,9 +32,9 @@ function runge_kutta()
 
         i = size(predicted_yn)[1]
         k1 = derivative_function(t)
-        k2 = derivative_function(t+x_increment/2) # + predicted_yn[i]+x_increment*(k1/2)
-        k3 = derivative_function(t+x_increment/2) # + predicted_yn[i]+x_increment*(k2/2)
-        k4 = derivative_function(t+x_increment) #  +   predicted_yn[i]+x_increment*k3
+        k2 = derivative_function(t+x_increment/2) + x_increment*(k1/2)
+        k3 = derivative_function(t+x_increment/2) + x_increment*(k2/2)
+        k4 = derivative_function(t+x_increment)   + x_increment*k3
 
 
         y_n_plus_1 = predicted_yn[i] + (x_increment/6)*(k1+(2*k2)+(2*k3)+k4)

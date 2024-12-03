@@ -1,3 +1,4 @@
+# OTSU'S ALGORITHM
 
 function get_grayscale(image)
     # if it's already in Grayscale, then we can skip the transformation part

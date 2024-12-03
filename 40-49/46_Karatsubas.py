@@ -1,5 +1,7 @@
+# KARATSUBA'S ALGORITHM
 
 import time
+
 def karatsuba(x, y):
     # with single digits, we can simply multiply
     if x < 10 or y < 10:

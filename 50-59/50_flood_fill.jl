@@ -1,3 +1,4 @@
+# FLOOD FILL ALGORITHM
 
 function get_neighboring_points(matrix, p, c)
     points_to_process = []

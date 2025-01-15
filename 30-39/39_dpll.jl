@@ -1,10 +1,14 @@
 
+# DAVIS-PUTNAM-LOGEMAN-LOVELAND ALGORITHM
 
-
+# although more professional implementations of the algorithm do not rely on
+# explicit clauses such as the ones below, for our demonstrative purpose, this
+# is sufficient. Each of these functions can be "concatenated" using
+# conjunctions to construct the final SAT-program in the conjunctive normal form
+# (CNF), the form that the algorithm sets out to solve.
 function f1(a, b, c, d)
     return (a | b) | (c | d)
 end
-
 
 function f2(a, b, c, d)
     return a | b | c | d
@@ -26,7 +30,7 @@ function f6(a, b, c, d)
     return ~b & (c | ~d)
 end
 
-
+# a summary of all the clauses
 clauses = [
     f1,
     f2,
@@ -36,7 +40,7 @@ clauses = [
     f6
 ]
 
-
+# this is just a support function to enumerate all possible permutations
 function convert_to_bools(number)
     results = []
     for i in 1:4
@@ -47,31 +51,45 @@ function convert_to_bools(number)
     return results
 end
 
-
-
+# Our approach is by far the simplest approach to the DPLL algorithm, in that we
+# do not use any high-level data structures and simply try and "guess" the
+# answer. This is literally the "brute-force" approach done most explicitly.
+# Improvements to this code are innumerable: parallelization using multiple
+# threads, evaluation of the clauses to determine which atoms necessary must be
+# 1, which ones necessarily 0, a  rfactoring involving recursion, backtracking,
+# restarts, etc. Existing solvers employ these more sophisticated methods, and
+# can solve such formulas in much faster (average) time.
 function dpll(clauses)
+    # main guess loop
     for i in 1:16
+       # decode the guess parameter into its different atoms 
        results = convert_to_bools(i)
+
+       # set the variables to be evaluated in the clauses
        a = results[1]
        b = results[2]
        c = results[3]
        d = results[4]
 
        satisfiable = true
-       for j in 1:length(clauses)
+
+       # evaluate them
+       for j in eachindex(clauses)
+        # if one clause isn't satisfied, because the expression is in CNF, the
+        # rest of the formula cannot be satisfied. So we exit
             if clauses[j](a,b,c,d) == false
                 satisfiable = false
                 break   
             end
         end
 
+        # if all the clauses sare satisfiable, then so is the whole formula
         if satisfiable
             return [true, [a,b,c,d]]
         end
     end
     return false, []
 end
-
 
 
 result = dpll(clauses)

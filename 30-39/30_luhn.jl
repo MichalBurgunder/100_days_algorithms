@@ -15,13 +15,15 @@ function luhn_algorithm(string_number)
     number_of_digits = length(string_number)-1
     parity = number_of_digits % 2
 
-    # in order to check the number given, we will need to do a linear scan through all of the numbers
+    # in order to check the number given, we will need to do a linear scan
+    # through all of the numbers
     for i in range(1, number_of_digits)
 
         # we pick the digit from the string
         digit = parse(Int, string_number[i])
 
-        # now we check whether the entry is odd or even, to multiply by two, or not
+        # now we check whether the entry is odd or even, to decide whether we
+        # multiply by two, ornot
         if i % 2 == parity
             digit = digit * 2
 

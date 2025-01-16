@@ -1,6 +1,5 @@
 # DYNAMIC TIME WARPING
 
-# TODO: need to make distance the hypotenuse
 # this algorithm is very similar to that of the Levenshtein distance algorithm,
 # with the exception that the Levenshtein distance computes the exact, linear
 # offset. Dynamic timewarping however decides how much two continuous curves/
@@ -28,7 +27,7 @@ function dynamic_time_warping(curve1, curve2, offset_guess)
 
     for i in 2:c1s
         for j in 2:c2s
-            # compute the cost of the path
+            # compute the cost of the path by finding the hypotenuse
             cost = abs(sum([curve1[i][d] - curve2[j][d] for d in 1:dimensions]))
 
             # take the mininum distance path 

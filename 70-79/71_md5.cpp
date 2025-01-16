@@ -6,6 +6,8 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <bitset>
+#include <sstream>
 
 using namespace std;
 
@@ -16,7 +18,7 @@ int leftrotate(int F, int s_value) {
 }
 
 
-// FROM CHATGPT
+// // FROM CHATGPT
 std::string binaryToHex(const std::string& binaryStr) {
     std::stringstream ss;
     ss << std::hex << std::bitset<8>(binaryStr).to_ulong(); // Assuming each binary string represents a byte
@@ -24,14 +26,24 @@ std::string binaryToHex(const std::string& binaryStr) {
     return hexStr;
 }
 
-std::string appendBinaryToHex(int... integers, int numBits) {
+std::string intToBinary(int num, int numBits) {
+    std::string binary;
+    for (int i = numBits - 1; i >= 0; --i) {
+        binary += (num & (1 << i)) ? '1' : '0';
+    }
+    return binary;
+}
+
+std::string appendBinaryToHex(int a, int b, int c, int d, int numBits) {
+    cout << "YES" << endl;
     std::string binaryConcatenated;
-    for (int num : {integers...}) {
-        binaryConcatenated += intToBinary(num, numBits);
+    int numbers[4] = {a, b, c, d};
+    for (int i=0; i<4; i++) {
+        binaryConcatenated += intToBinary(numbers[i], numBits);
     }
     
     std::string hexStr;
-    for (size_t i = 0; i < binaryConcatenated.size(); i += 8) {
+    for (int i=0; i < binaryConcatenated.size(); i += 8) {
         std::string byte = binaryConcatenated.substr(i, 8);
         hexStr += binaryToHex(byte);
     }
@@ -39,13 +51,20 @@ std::string appendBinaryToHex(int... integers, int numBits) {
     return hexStr;
 }
 
-
+vector<bool> to_vector(std::string the_string) {
+        std::vector<bool> full_bits;
+        std::bitset<8> bitset(the_string);
+        for (int i = 0; i < 8; ++i) {
+            full_bits.push_back(bitset[i]);
+        }
+  return full_bits;
+}
 // MAIN FUNCTION
-int hash_me_baby_md5(std::string the_string) {
+std::string hash_me_baby_md5(std::string the_string) {
     // NOTE: this implementation of MD5 has been taken directly from Wikipedia.
     // Some credit goes to those anyonymous writers who contributed to its
     // article.
-    std::vector<bool> message = to_vector(the_string);
+    std::vector<bool> message = to_vector(the_string);// td::vector<char>(.begin(), the_string.end());
 
     // All variables are unsigned 32 bit and wrap modulo 2^32 when calculating
     int K[64];
@@ -142,9 +161,8 @@ int hash_me_baby_md5(std::string the_string) {
         // for i in 
         // break chunk into sixteen 32-bit words M[j], 0 ≤ j ≤ 15
 
-
         std::vector<uint32_t> M(16);
-        for(int j = 0; j < message; j += 16) {
+        for(int j = 0; j < message.size(); j += 16) {
             // M[j] = {message.begin(j), message.end() + 15};
             // M[j] = {message.begin(j), j + 32};
 
@@ -193,18 +211,17 @@ int hash_me_baby_md5(std::string the_string) {
         d0 = d0 + D;
     }
 
-    std::string digest = appendBinaryToHex(a0, b0, c0, d0, 8); // a0 append b0 append c0 append d0 // (Output is in little-endian)
-}
+    cout << "YES" << endl;
 
-std::vector<bool> to_vector(std::string to_hash) {
-     std::vector<bool> temp_vec;
-     std::copy(to_hash.begin(), to_hash.end(), std::back_inserter(temp_vec));
-     return temp_vec;
+    std::string digest = appendBinaryToHex(a0, b0, c0, d0, 8); // a0 append b0 append c0 append d0 // (Output is in little-endian)
+
+    return digest;
 }
 
 int main() {
     std::string to_hash = "Hello World!";
 
-    hash_me_baby_md5(to_hash);
+     std::string result = hash_me_baby_md5(to_hash);
+     cout << result << endl;
     return 0;
 }

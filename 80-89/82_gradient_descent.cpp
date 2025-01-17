@@ -17,19 +17,19 @@ float the_function(float x, float a) {
 }
 
 // the below function is included in any proper implementation of gradient
-// desccent, though we include our naive implementation for completion sake: it
+// descent, though we include our naive implementation for completion sake: it
 // simply computes multiple inputs at the same time. When using gradient descent
-//  for neural networks, they would typically compute the inputs/errors in such
+// for neural networks, they would typically compute the inputs/errors in such
 // batches. However, neural net libraries (such as torch or tensorflow),
 // implement this via CUDA, which allows parallel processing (read: computing)
 // if an appropriate GPU is available. This function would typically be written
-//using those libraaries, instread of pure C++, as we have it here.
+// using those libraries, instread of pure C++, as we have it here.
 std::vector<float> batch_compute(const std::vector<float> &input,
                                                              float a_estimate) {
     std::vector<float> output(input.size());
 
-    for(int i = 0; i<input.size(); i++) {
-        output[i] = the_function(input[i], a_estimate); // TODO: this is incorrect // why?
+    for(int i = 0; i < input.size(); i++) {
+        output[i] = the_function(input[i], a_estimate);
     }
     return output;
 }
@@ -53,7 +53,7 @@ std::vector<float> estimate_derivative(const std::vector<float> &xs, float a) {
     return estimated_derivatives;
 }
 
-// here we compute the error to 
+// here we compute the error to to see if our procedure is improving the result
 float get_errors(std::vector<float> estimates,
                                             std::vector<float> actual_outputs) {
     float error = 0;

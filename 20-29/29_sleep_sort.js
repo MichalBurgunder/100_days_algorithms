@@ -9,10 +9,10 @@ function log_it(number) {
 }
 
 // we sort an array of integers by passing them into a sleep function, which
-// will execute a specific function (console.lo, above), that outputs the number.
-// Because the smallest numbers will sleep the shortest, they will be printed
-// out first. The longer ones will be printed out later, hence giving us an
-// ordered column of our integers.
+// will print the number after the number amount of seconds. Because the
+// smallest numbers will "sleep" the shortest, i.e. the shortest ones will be
+// printed, they will be printed in order, smallest ones first. The longer ones 
+// will be printed out later, hence giving us an ordered column of our integers.
 function sleep_sort(array) {
     // recall that we need to loop through the array to, at the very least,
     // check every value

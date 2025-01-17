@@ -44,7 +44,7 @@ function runge_kutta()
     # we begin one increment further ahead, given that the first point has
     # already been filled out for us
     x_beginning = -3+x_increment 
-    x_ending = 3  # 
+    x_ending = 3
     
     for t in x_beginning:x_increment:x_ending
         push!(final_ts, t) # recording our x
@@ -69,7 +69,7 @@ function runge_kutta()
 
     # we display the graph
     the_display = display(plot(final_ts, [actual_function_yn, predicted_yn]))
-    sleep(10)
+    sleep(100)
     return
 end
 

@@ -206,6 +206,7 @@ function gif_creation()
         push!(images, final_image)
     end
 
+    # create the gif
     images_directory = "/Users/michal/Documents/100daysofalgorithms/70-79/images"
     framerate = 100
     gifname = "/Users/michal/Documents/100daysofalgorithms/70-79/dead_end_filling.gif"

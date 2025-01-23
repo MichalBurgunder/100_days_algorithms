@@ -21,13 +21,13 @@ end
 
 # the Runge-Kutta method. Although we can approximate the function with any
 # degree of specificity, we are resorting to the standard RK4 implementation,
-# one using 4 intermediary variables. 
+# one using 2 intermediary variables. 
 function runge_kutta()
     # the only necessary parameters in order to run the method is the initial
-    # point. Technicallly, we don't need it though. However, if we have one
-    # point, then we can more easily visualize how closely our estimated
-    # function follows the actual function. Without this initial point, our
-    # predicted would simply just be a constant away from the actual answer.
+    # point, and the gradient at each selected point. If we have one point,
+    # then we can more easily visualize how closely our estimated function
+    # follows the actual function. Without this initial point, our predicted
+    # function would be a constant away from the actual answer at all times.
     final_ts = [-3.0] # x starting point, and all subsequent points
     actual_function_yn = [2.696] # actual values 2.696 is the value of the
                                                             # function at x=-3
@@ -39,7 +39,8 @@ function runge_kutta()
     
     # we pick the interval we wish to approximate. I picked -3 to 3, because it
     # has two local minimal, two local maxima. Thus, our method needs to
-    # modulate its predictions as it iterates
+    # modulate its predictions as it iterates, so we get to see the method in
+    # full action
 
     # we begin one increment further ahead, given that the first point has
     # already been filled out for us
@@ -49,7 +50,7 @@ function runge_kutta()
     for t in x_beginning:x_increment:x_ending
         push!(final_ts, t) # recording our x
 
-
+        # the key concept of RK4, is that we are estimating where the next point based on the derivative of 4 points. These are the first point, the point that Euler's method would have predicted, the point that Euler's method would have given, if we had point 2, and the final point, which is the derivative at the full increment. Note, that we give each derivative a different weight in terms of "how much of it" should be used to compute the final, predicted point (non-derivative)
         k1 = derivative_function(t)
         k2 = derivative_function(t+x_increment/2) + x_increment*(k1/2)
         k3 = derivative_function(t+x_increment/2) + x_increment*(k2/2)
@@ -68,7 +69,7 @@ function runge_kutta()
 
 
     # we display the graph
-    the_display = display(plot(final_ts, [actual_function_yn, predicted_yn]))
+    display(plot(final_ts, [actual_function_yn, predicted_yn]))
     sleep(100)
     return
 end

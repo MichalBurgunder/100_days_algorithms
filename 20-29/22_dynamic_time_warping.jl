@@ -62,7 +62,7 @@ curve1 = [
         ]
 
 curve2 = [
-            [ # feel free to use differetn multipliers
+            [ # feel free to use differet multipliers
                 sin(multipliers_curve[1]*(i*pi))+offset,# sin(7.7*(i*pi))+offset
                 cos(multipliers_curve[2]*(i*pi))+offset # cos(3.6*(i*pi))+offset
             ] 

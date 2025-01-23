@@ -1,23 +1,38 @@
 # DALTONIZATION ALGORITHM
 
-# while the RGB format works best when working with images on computers, the LMS more
-# closely corresponds to human reality, in that this color space respects human biology
+using Pkg
+Pkg.add("Images")
+Pkg.add("ColorVectorSpace")
+Pkg.add("ColorTypes")
+Pkg.add("Colors")
+using Images
+using ColorVectorSpace
+using ColorTypes
+using Colors
 
-# transformation of rbg space to lms space
+# while the RGB format works best when working with images on computers, the LMS
+# more closely corresponds to human reality, in that this color space respects
+# human oculuar biology. This is because the cells that respond to different
+# colors do so, with different probability distributions (both mean and std.
+# being different). In RGB-color space however, this subtilty is not reflected. 
+
+# transformation of rbg space to lms space (taken from the research paper)
 rgb_to_lms = [
     0.3904725  0.54990437 0.00890159;
     0.07092586 0.96310739 0.00135809;
     0.02314268 0.12801221 0.93605194;
 ]
-# transformation of lms space to rgb space
+# transformation of lms space to rgb space (taken from the research paper)
 lms2rgb = [
     2.85831110 -1.62870796 -0.02481870;
     -0.21043478  1.15841493  0.00320463;
     -0.04188950 -0.11815433  1.06888657;
 ]
 
-# the different corrections depending on one's colorblindness
-# the values cannot ever be exactly correct, as everyone's colorblindness differs slightly
+# these are the different corrections depending on one's specific
+# colorblindness, both in type and intensity. The values cannot ever be exactly
+# correct, as everyone's colorblindness differs slightly, which is why these can
+# be different, depending on who specifically it is targeting. 
 protanopia = [
     0 0.90822864 0.008192;
     0 1 0;
@@ -36,6 +51,7 @@ tritanopia = [
     -0.15773032 1.19465634 0;
 ]
 
+# TODO: whats this
 err2mod = [
     0 0 0; 
     0.7 1 0;
@@ -115,8 +131,6 @@ function daltonize(image)
     println("saved!")
 end
 # -----------------------------------------------------------------
-
-using Images, ColorVectorSpace, ColorTypes, Colors
 
 my_image = load("/Users/michal/Documents/my_image.jpeg")
 

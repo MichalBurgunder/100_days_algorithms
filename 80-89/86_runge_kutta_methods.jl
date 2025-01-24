@@ -18,6 +18,10 @@ function derivative_function(x)
     return (5/32)*x^4+(4/60)*x^3-(63/50)*x^2+0.8
 end
 
+# to compare the runge kutta metohd 
+function eulers_method()
+
+end
 
 # the Runge-Kutta method. Although we can approximate the function with any
 # degree of specificity, we are resorting to the standard RK4 implementation,
@@ -50,7 +54,15 @@ function runge_kutta()
     for t in x_beginning:x_increment:x_ending
         push!(final_ts, t) # recording our x
 
-        # the key concept of RK4, is that we are estimating where the next point based on the derivative of 4 points. These are the first point, the point that Euler's method would have predicted, the point that Euler's method would have given, if we had point 2, and the final point, which is the derivative at the full increment. Note, that we give each derivative a different weight in terms of "how much of it" should be used to compute the final, predicted point (non-derivative)
+        # the key concept of RK4, is that we are estimating where the next point
+        # based on the gradient of 4 points. These are the first point (k_1),
+        # the point we would obtain if we were to use use Euler's method(k_2),
+        # a third point that is based on the first and second points (k_3) and
+        # the final point, which is obtained by approximating it using the third
+        # point (k_4). Note that for the final computation, we give each
+        # derivative a different weight in terms of "how much of it" should be
+        # used to compute the final, predicted location of the original function
+        # after a small step size.
         k1 = derivative_function(t)
         k2 = derivative_function(t+x_increment/2) + x_increment*(k1/2)
         k3 = derivative_function(t+x_increment/2) + x_increment*(k2/2)

@@ -1,4 +1,4 @@
-
+// LINEAR CONGRUENTIAL GENERATOR
 
 #include <stdio.h>
 
@@ -11,7 +11,7 @@ long get_random_number(unsigned long x, unsigned long a, unsigned long c,
 }
 
 // to avoid having to redefine variables, I just plugged them into this function
-// for cleaner management of constants. 
+// for cleaner management. 
 void reset_nums(
     unsigned long *x, unsigned long *a, unsigned long *c, unsigned long *m, 
             long new_x, long new_a, long new_c, long new_m) {
@@ -77,7 +77,7 @@ int main() {
     generate_random_numbers(x, a, c, m, 0);
 
     // Finally, if we increase all numbers to very large sizes, the loop becomes
-    //  so large that it takes a significant amount of time before the function
+    // so large that it takes a significant amount of time before the function
     // loops again. Ideally, the loop would be so large that it would take more
     // than a few minutes, days, or weeks before the loop repeats, when
     // resources are full dedicated to generating these random numbers. If we

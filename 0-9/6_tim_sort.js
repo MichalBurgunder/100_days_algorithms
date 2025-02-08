@@ -1,7 +1,5 @@
 // TIM SORT ALGORITHM
 
-const MINRUN = 2
-
 function find_minrun(n) {
     let r = 0
     while(n >= MINRUN) {
@@ -44,7 +42,7 @@ function merge(array, l, r, e) {
     // so that we are able to iterate through the both arrays at the same time
     let i = 0 // going through our "left" subarray
     let j = 0 // going through our "right" subarray
-    let setPosition = l // determines which element to update in the original array
+    let setPosition = l // determines the element to update in the OG array
 
     // and now we "zip" them up:
     while (i < left.length && j < right.length) {
@@ -117,7 +115,10 @@ function tim_sort(array) {
     return array
 }
   
-  
+// depending on the CPU/PU being used, we should modify this parameter to get an
+// ideal efficiency
+const MINRUN = 2
+
 array = [-1, 5, 0, -3 ,11, 9, -2, 7, 0]
 // array = [7, 3, 8, 5]
 // array = [1, 8, 99, 100, 6, 9, 40]
@@ -131,7 +132,14 @@ array = [-1, 5, 0, -3 ,11, 9, -2, 7, 0]
 // array = [7, 3, 8, 5]
 // array = [1, 8, 99, 100, 6, 9, 40]
 
-// our implementation of timsort in JavaScript is nowhere near the efficient implementation in its compiler. The reason for this, is that we are performing significant memory allocations, along with the fact that we are using pre-given functions, which also take time to compile and run. Node however is implemented with C++ (for some parts), where efficiency is at a near theoretical maximum. We have not tried to be this precise in our sorting algorithm, hence why it significantly underpeforms.  
+// our implementation of timsort in JavaScript is nowhere near the efficient
+// implementation in its compiler/interpreter. The reason for this, is that we
+// are performing significant memory allocations, along with the fact that we
+// are using pre-given functions, which also take time to compile and run. 
+// Node.js however is implemented with C++ (for some parts), where efficiency
+// has been at experimentally tested, to apply the fastest algorithm for the
+// task given. We have not tried to be this precise in our sorting algorithm,
+// hence why it significantly underpeforms against the saved procedure.
 console.time()
 console.log(array.sort((a, b) => a - b))
 console.timeEnd()

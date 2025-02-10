@@ -1,0 +1,29 @@
+doctor
+water T
+sleep T
+
+ambulance
+reaction time F
+concentration F
+alcohol T
+massive_pain T
+
+depression
+sleep F
+satsified F
+
+rest
+surgery T
+ibuprofin T
+
+bananas
+amino acids F
+banana allergy F
+
+emergency
+doctor T
+ambulance T
+
+on_medication |
+ibuprofin T
+paracetamol T 

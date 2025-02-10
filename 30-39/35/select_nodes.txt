@@ -1,0 +1,33 @@
+headache
+water F
+sleep F
+surgery F
+force F
+alcohol T
+migraine F
+banana allergy F
+satisfied F
+
+water
+sports T
+concentration F
+
+sleep
+reaction time F
+depression T
+
+surgery
+tired T
+recovery T
+
+force T
+ibuprofin T
+paracetamol F
+
+alcohol
+amino acids T
+
+migraine
+morphine T
+temazepam T
+massive_pain T

@@ -26,4 +26,7 @@ Barnes-Hut-Simulation/*
 node_modules
 a.out
 
-wavefunction-collapse
+wavefunction-collapse/*
+
+numerical-algorithms/*
+

@@ -3,13 +3,6 @@ from sys import platform
 import numpy as np
 from math import pi
 
-def clear_terminal():
-    '''clears terminal, for easier overview'''
-    if platform == "darwin":
-        system('clear')
-    else:
-        system('cls')
-clear_terminal()
 
 def the_function(x):
     '''the function we need to find the fast fourier transform for'''

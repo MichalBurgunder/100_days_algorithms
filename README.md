@@ -12,7 +12,7 @@ Each algorithm has been saved in their own file, which are present in several di
 
 ### MacOS
 
-Python and Node should both be preinstalled on your computer. For Julia, you'll have to install it manually via `brew install julia`. For Java, you will need to install a runtime for it, such as [OpenJDK](https://jdk.java.net/18/). You might also want to download a UI for Java. I'd recommend a an IDE like [IntelliJ](https://www.jetbrains.com/idea/download/?fromIDE=#section=mac) (payment/trial required), or [Eclipse](https://www.eclipse.org/downloads/), although you can also run Java from the command line as well. Compiling Java classes can come with a load of pain and frustration, if using mulitple classes and .JAR files, although I've omitted these.
+Python and Node should both be preinstalled on your computer. For Julia, you'll have to install it manually via `brew install julia`. For Java, you will need to install a runtime for it, such as [OpenJDK](https://jdk.java.net/18/). You might also want to download a UI for Java. I'd recommend an IDE like [IntelliJ](https://www.jetbrains.com/idea/download/?fromIDE=#section=mac) (payment/trial required), or [Eclipse](https://www.eclipse.org/downloads/) (free), although you can also run Java from the command line as well. Compiling Java classes can come with a load of pain and frustration, if using mulitple classes and .JAR files, although I've omitted this added complexity where I could.
 
 The below table are a list of instructions for running any file in this repo in the shell, when you are located in any level-1 folder. 
 

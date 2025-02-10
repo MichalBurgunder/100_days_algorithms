@@ -1,7 +1,7 @@
 // SLEEP SORT ALGORITHM
 
-// we could also place them into an array if we wished to, although this is
-// just a formalization. Given that out we are working in a sync environment, we
+// we could also place them into an array if we wished to, although this is just
+// a formalization. Given that out we are working in a sync environment, we
 // would have to do some more processing (settimeout to the largest element
 // which then prints the array), but this is optional.
 function log_it(number) {

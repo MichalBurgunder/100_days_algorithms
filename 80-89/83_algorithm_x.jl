@@ -1,7 +1,5 @@
 # ALGORITHM X
 
-
-
 function where_row_is_minimum_number(number_of_nodes, excluded_rows, sums_of_ones, minimum_number)
     return [filter(element -> i in excluded_rows) || sums_of_ones[i] != minimum_number for i in 1:number_of_nodes]
 end

@@ -1,10 +1,12 @@
+# ITERATIVE CLOSEST POINT ALGORITHM
+
 import numpy as np
 import matplotlib.pyplot as plt 
 
 pointSetP =  np.array([[-2.4,-1.6], [0.5,-0.7],[-3.0,0.3],[-1.1,0.9],[-3.6,2.2],[-0.7,3.1],])
 pointSetQ = np.array([[-0.3,0.5],[1.6,-1.8],[1.3,1.7],[2.5,0.2],[2.8,3.0],[4.7,0.6]])
 
-'''Plots some data points (used for testing)'''
+# we plot our results
 def plotStuff(pPoints, qPoints, R, t, newPoints):
     nx = list(map((lambda x: x[0]), newPoints))
     ny = list(map((lambda x: x[1]), newPoints ))

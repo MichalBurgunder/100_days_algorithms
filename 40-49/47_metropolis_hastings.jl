@@ -8,6 +8,7 @@ using PoissonRandom
 using Distributions
 using StatsBase
 
+TODO: frewquencies off by 1 (see image)
 # we check what the frequency of this data point is in the orignal distribution.
 # In truth, this function, in essence, is merely target_distribution[value] with
 # some validation to make sure that the values we have reached are valid ones,

@@ -68,7 +68,9 @@ function rgbize(p)
     return RGB(p[1], p[2], p[3])
 end
 
-# in order to know what to correct for, we need to first simulate what a dichromat sees
+# this takes in some point p, and modfies its colors based on the type of color
+# deficiency we wish to simulate. That is, the second argument will be the
+# matrix associated with the color deficiency. 
 function simulate(p, color_deficiency)
     point = vectorize(p)
     point = point * transpose(rgb_to_lms)
@@ -80,9 +82,11 @@ end
 
 # performs color correction on images so that dichromats can see betters
 function daltonize(image)
-    new_image_p = Matrix{RGB}(undef, size(my_image, 1), size(my_image, 2)) # final protanopia image
-    new_image_d = Matrix{RGB}(undef, size(my_image, 1), size(my_image, 2)) # final deuteranopia image
-    new_image_t = Matrix{RGB}(undef, size(my_image, 1), size(my_image, 2)) # final tritanopia image
+    # we create our repositories for our final protanopia (p), deuteranopia (d)
+    # and tritanopia (t) modified images.
+    new_image_p = Matrix{RGB}(undef, size(my_image, 1), size(my_image, 2))
+    new_image_d = Matrix{RGB}(undef, size(my_image, 1), size(my_image, 2))
+    new_image_t = Matrix{RGB}(undef, size(my_image, 1), size(my_image, 2))
 
     # we first simulate what dichromats can see
     for i in 1:size(image, 1)
@@ -97,9 +101,11 @@ function daltonize(image)
     new_image_d = map(clamp01nan, new_image_d)
     new_image_t = map(clamp01nan, new_image_t)
 
-    # these images allow us to see what "dichromats", i.e. people who only see two colors see
-    # uncomment to save these images
+    # these images allow us to see what "dichromats", i.e. people who only see
+    # two colors see
 
+    # uncomment to save these images
+    
     # save("protanopia_simulation.png", new_image_p)
     # save("deuteranopia_simulation.png", new_image_d)
     # save("tritanopia_simulation.png", new_image_t)

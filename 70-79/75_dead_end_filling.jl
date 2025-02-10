@@ -36,7 +36,8 @@ function resize(maze, new_size)
         for new_row in 1:new_size
             for j in 0:n-1
                 for new_column in 1:new_size
-                    new_maze[i*new_size+new_row, j*new_size+new_column] = maze[i+1, j+1]
+                    new_maze[i*new_size+new_row, j*new_size+new_column] =
+                                                                  maze[i+1, j+1]
                 end
             end
         end 
@@ -213,7 +214,7 @@ function gif_creation()
     FFMPEG.ffmpeg_exe(`-framerate $(framerate) -f image2 -i $(images_directory)/%04d.png -y $(gifname)`)
 
     # we remove the images, as we now have our gif
-    rm(images_directory, recursive=true)
+    # rm(images_directory, recursive=true)
 end
 
 

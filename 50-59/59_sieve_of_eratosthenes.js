@@ -9,7 +9,7 @@ function sieve_eratosthenes(x) {
     // number squared that is larger than the upper limit, need not concern us. 
     sqrt_x = Math.ceil(Math.sqrt(x))
 
-    // and now, we simply check for the numbers up to this square root. Remember,
+    // and so, we simply check for the numbers up to this square root. Remember,
     // that if n is larger than the the square root, then those numbers affected
     // by the larger numbers have already been dealth with, with a correspoding
     // smaller number.

@@ -58,7 +58,8 @@ function compute_otsu_criteria(image, threshold, final_image=false)
     # worthlessness" of thresholding an image with a particular threshold.
     # This is why we try and maximie this value, so that the final image
     # differentiats as much "important" information as possible 
-    return weight_non_zero * var(val_pixels_non_zero) + weight_zero * var(val_pixels_zero)
+    return weight_non_zero * var(val_pixels_non_zero) +
+                                              weight_zero * var(val_pixels_zero)
 end
 
 

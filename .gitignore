@@ -7,6 +7,11 @@
 /dataSources/
 /dataSources.local.xml
 
+.DS_Store
+
+obj/**
+bin/**
+
 .idea
 misc
 playground*
@@ -19,8 +24,12 @@ playground*
 *.json
 *.rtf
 *.pdf
+*.dll
+
+temp.*
 
 _archive/*
+archiuve/*
 Barnes-Hut-Simulation/*
 
 node_modules
@@ -29,4 +38,9 @@ a.out
 wavefunction-collapse/*
 
 numerical-algorithms/*
+
+.vimrc
+
+
+
 

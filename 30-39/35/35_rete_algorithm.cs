@@ -2,7 +2,16 @@ using System;
 
 class Comparison {
     public static bool is_prop(string s) {
-        return s.Length == 0 || (s[s.Length-1] != 'T' && s[s.Length-1] != 'F');
+        return s[s.Length-1] == 'T' || s[s.Length-1] == 'F';
+    }
+
+    public static bool is_condition(string s) {
+        // Console.WriteLine(s[s.Length-1]);
+        return (s[s.Length-1] != 'T' && s[s.Length-1] != 'F') && s.Length != 0;
+    }
+
+    public static bool is_empty(string s) {
+        return s.Length == 0;
     }
 }
 
@@ -21,51 +30,69 @@ class ConditionCollector {
         throw new Exception("condition does not exist");
     }
 
-        public Condition? condition_exists(string condition_name) {
-            for(int i = 0; i < conditions.Count; i++) {
-                if(conditions[i].name == condition_name) {
-                    return conditions[i];
-                }
+    public Condition? condition_exists(string condition_name) {
+        for(int i = 0; i < conditions.Count; i++) {
+            if(conditions[i].name == condition_name) {
+                return conditions[i];
             }
-            return false;
+        }
+        return null;
+    }
+
+    public void add_Condition(Condition bn) {
+        this.conditions.Add(bn);
     }
 
     public void add_beta_node(Condition bn) {
-        beta_nodes.Append(bn);
+        this.beta_nodes.Add(bn);
     }
 
     public void collect_conditions(ConditionCollector cc, string[] lines) {
         int i = 0;
-        Condition current_condition;
 
         while(i < lines.Length) {
-            if(!Comparison.is_prop(lines[i])) {
+            Console.WriteLine("'" + lines[i] + "'");
+            
+            if(Comparison.is_condition(lines[i])) {
                 // it's a new condition
-                current_condition = new Condition(lines[i].Substring(0, lines[i].Length-2), cc);
+                Console.WriteLine("Creating new condition in collect conditions");
+                Condition current_condition = new Condition(lines[i].Substring(0, lines[i].Length), cc);
+
+                conditions.Add(current_condition);
+                Console.WriteLine();
                 i++;
-                while(true) {
+                while(i < lines.Length) {
                     if(Comparison.is_prop(lines[i])){
+                        Console.WriteLine("adding prop");
                         current_condition.add_prop(lines[i]);
                         i++;
                     } else {
+                        if (Comparison.is_empty(lines[i])) {
+                            i++;
+                        }
                         break;
                     }
                 }
                 if(current_condition.is_alpha()) {
                     this.alpha_memories.Add(current_condition);
                 }
-            }
+            } 
+
+            // Console.WriteLine("tralala");
+            // Console.WriteLine()
+            // Environment.Exit(1);
             // rogue line; report!
-            throw new Exception("rogue line detected");
+            // throw new Exception("rogue line detected");
         }
     }
 
+    // private void add_condition()
     public List<Condition> apply_beta_nodes() {
         List<Condition> all_beta_nodes = [];
 
         for(int i=0; i < this.beta_nodes.Count; i++) {
             this.beta_nodes[i].set_state();
-            if(this.beta_nodes[i].get_state()) {
+            if((bool) this.beta_nodes[i].state) {
                 all_beta_nodes.Add(this.beta_nodes[i]);
             }
         }
@@ -85,7 +112,7 @@ class ConditionCollector {
                 while(true) {
                     if(Comparison.is_prop(lines[i])){
                         Condition condition = this.get_condition(lines[i]);
-                        beta_nodes.add_condition(condition);
+                        beta_node.add_condition(condition);
                         i++;
                     } else {
                         break;
@@ -96,49 +123,62 @@ class ConditionCollector {
             throw new Exception("rogue line detected in beta creation");
         }
     }
+
+    public void print_conditions() {
+        Console.WriteLine(this.conditions.Count);
+        for(int i=0;i<this.conditions.Count;i++) {
+            Console.WriteLine(this.conditions[i].name);
+        }
+
+        for(int i=0;i<this.alpha_memories.Count;i++) {
+            Console.WriteLine(this.alpha_memories[i].name);
+        }
+
+    }
 }
 
 class Condition {
 
     private ConditionCollector cc;
-    private List<Condition> list_of_conditions = [];
+    private List<Condition> list_of_prereqs = [];
     private bool is_beta_node = false;
-    private bool? state;
+    public bool state;
     public string name;
 
     public string get_name() {
         return this.name;
     }
+    
+    public void add_condition(Condition condition) {
+        list_of_prereqs.Add(condition);
+    }
 
-    public Condition(string name, ConditionCollector? cc, bool is_beta = false) {
+    public Condition(string name, ConditionCollector cc, bool is_beta = false) {
         this.name = name;
+        this.cc = cc;
 
-        if(!is_beta) {
-            this.cc = cc;
-        } else {
+        if(is_beta) {
             cc.add_beta_node(this);
         }      
     }
 
     public void add_prop(string new_cond) {
-        if(this.is_beta_node) {
-            throw new Exception("can't add conditions to beta node");
-        }
-
-        Condition new_condition = this.cc.condition_exists(new_cond);
+        Condition? new_condition = this.cc.condition_exists(new_cond);
         if(new_condition == null) {
+            Console.WriteLine("creating new condition in add prop");
             new_condition = new Condition(new_cond, this.cc);
+            this.cc.add_Condition(new_condition);
         }
-        list_of_conditions.Append(new_condition);
+        this.list_of_prereqs.Add(new_condition);
     }
 
     public bool is_alpha() {
-        return this.list_of_conditions.Count == 0;
+        return this.list_of_prereqs.Count == 0;
     }
 
     public bool set_state() {
         if(this.state != null) {
-            return this.state;
+            return (bool) this.state;
         }
 
         if(!is_beta_node) {
@@ -146,8 +186,8 @@ class Condition {
         }
 
 
-        for(int i=0;i<this.list_of_conditions.Count;i++) {
-            bool state = this.list_of_conditions[i].set_state();
+        for(int i=0;i<this.list_of_prereqs.Count;i++) {
+            bool state = this.list_of_prereqs[i].set_state();
             if(!state) {
                 this.state = false;
                 return false;
@@ -160,19 +200,30 @@ class Condition {
 
 class ReteAlgorithm {
     static void Main() {
-        // See https://aka.ms/new-console-template for more information
-        ConditionCollector cc = new ConditionCollector();
+        try {
+            // See https://aka.ms/new-console-template for more information
+            ConditionCollector cc = new ConditionCollector();
 
-        string[] lines = File.ReadAllLines("select_nodes.txt");
-        cc.collect_conditions(cc, lines);
+            string[] lines = File.ReadAllLines("select_nodes.txt");
+            cc.collect_conditions(cc, lines);
+            // cc.collect_conditions();
 
-        string[] lines_beta = File.ReadAllLines("beta_nodes.txt");
-        cc.create_beta_nodes(lines_beta);
+            Console.WriteLine("Here");
+            cc.print_conditions();
+            Environment.Exit(1);
+            string[] lines_beta = File.ReadAllLines("beta_nodes.txt");
+            cc.create_beta_nodes(lines_beta);
 
-        string[] betanodes = cc.apply_beta_nodes();
+            List<Condition> betanodes = cc.apply_beta_nodes();
 
-        for(int i=0; i<betanodes.Count;i++) {
-            Console.WriteLine(betanodes[i].get_name());
+            for(int i=0; i < betanodes.Count; i++) {
+                Console.WriteLine(betanodes[i].get_name());
+            }
+        } catch (Exception ex) {
+            Console.WriteLine($"Error: {ex.Message}");
+            Environment.Exit(1);
         }
+
     }
 }
+ 

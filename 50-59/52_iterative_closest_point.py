@@ -121,7 +121,9 @@ def ICP(pSet, qSet):
     # numpy implementation for simplicity
     U, Sigma, V = np.linalg.svd(covarianceMatrix) 
 
-    # multiplying the together, gets us the rotation matrix, as described above. 
+    # multiplying the together, gets us the rotation matrix, as described above.
+    # This, and the step above, constitue the Kabsch algorithm, an algorithm
+    # finding only the ideal rotational matrix for two point clouds. 
     R = np.dot(U, V.T)
 
     # to find the optimal translation, we first rotate the first point cloud

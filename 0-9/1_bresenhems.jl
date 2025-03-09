@@ -55,7 +55,7 @@ function bresenhems_line_algorithm(start_point, end_point)
         end
     end
 
-    # Reverse the list if the coordinates were swapped
+    # if the coordinates were swapped, we reverse the array 
     if swap
         reverse(pixels)
     end

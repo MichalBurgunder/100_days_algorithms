@@ -98,7 +98,7 @@ def strassen_algorithm(Matrix1, Matrix2):
 # strassen algorithm, it can only accept powers of 2 (2,4,8,16, etc). The bigger
 # the number, the more significant the speedup wil be, compared to naive matrix
 # multiplication
-matrix_size = 64
+matrix_size = 128
 
 Matrix1 = np.random.rand(matrix_size,matrix_size)
 Matrix2 = np.random.rand(matrix_size,matrix_size)
